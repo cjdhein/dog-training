@@ -37,7 +37,7 @@ function setup(){
 		var stateData = $("#state").val();
 		var zipData = $("#zip").val();
 
-		var payload = {
+		var clientPayload = {
 			fName : fNameData,
 			lName : lNameData,
 			phone : phoneData,
@@ -49,9 +49,9 @@ function setup(){
 			zip : zipData
 		}
 		
-		console.log(payload);
+		console.log(clientPayload);
 
-		$.post("http://flip2.engr.oregonstate.edu:24561/post", payload, function(data){
+		$.post("http://flip2.engr.oregonstate.edu:24561/post", clientPayload, function(data){
 			console.log("posted");
 			loadTable();
 		});
@@ -103,11 +103,11 @@ function addClient(payload){
 
 function addRow(payload){
 	var newRow = document.createElement("tr");
-	for(var i = 0; i < 6; i++){
+	for(var i = 0; i < 9; i++){
 		var subCell = document.createElement("td");
 		subCell.id = "cell" + i;
 		subCell.className = "dataCell";
-		if(i > 4){
+	/*	if(i > 4){
 			var buttonForm = document.createElement("form");
 			buttonForm.method = "post";
 			
@@ -122,8 +122,8 @@ function addRow(payload){
 
 			editButton.addEventListener("click", function(event){
 				var temp = event.target.parentNode.parentNode.parentNode.children;
-				var nameData = temp[0].textContent;
-				var repsData = parseInt(temp[1].textContent);
+				var fNameData = temp[0].textContent;
+				var lNameData = temp[1].textContent;
 				var weightData = parseInt(temp[2].textContent);
 				var dateData = temp[3].textContent;
 				var lbsData = temp[4].textContent;
@@ -254,15 +254,19 @@ function addRow(payload){
 			buttonForm.appendChild(hiddenId);
 			subCell.appendChild(buttonForm);
 			subCell.className = "buttonCell";
-		}
+		}*/
 		newRow.appendChild(subCell);		
 	}
 	var newCells = newRow.childNodes;
-	newCells[0].textContent = payload.name;
-	newCells[1].textContent = payload.reps;
-	newCells[2].textContent = payload.weight;
-	newCells[3].textContent = payload.date;
-	newCells[4].textContent = payload.lbs;
+	newCells[0].textContent = payload.firstName;
+	newCells[1].textContent = payload.lastName;
+	newCells[2].textContent = payload.houseNum;
+	newCells[3].textContent = payload.street;
+	newCells[4].textContent = payload.city;
+	newCells[5].textContent = payload.state;
+	newCells[6].textContent = payload.zip;
+	newCells[7].textContent = payload.phone;
+	newCells[8].textContent = payload.email;
 
 	
 	
