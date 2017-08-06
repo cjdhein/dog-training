@@ -1,40 +1,54 @@
 /**
  * Created by cjdhein on 2/7/2017.
  */
-setup();
+
+
+$(document).ready(setup());
 
 function setup(){
     $("#tablepanel").append(makeTable());
     //document.body.appendChild(makeTable());
-    var addButton = document.getElementById("addRow");
+    
+	var $actionSelectForm = $("#actionSelector");
+	var $tableSelectForm = $("#tableSelector");
+	var addClient = document.getElementById("addClient");
+	var $addClientModal = $("#addClientModal");
+	
+	$actionSelectForm.change( function(){
+		$tableSelectForm.show();
+	});
+	
+	$tableSelectForm.change( function(){
+		$addClientModal.show();
+	});
 	
 	$(function(){
 		$("#date").datepicker({dateFormat: 'yy-mm-dd'});
 	});
 	
-    addButton.addEventListener("click", function(event){
-		var nameData = document.getElementById("exercise").value;
-		var weightData = document.getElementById("weight").value;
-		var repsData = document.getElementById("reps").value;
-		var dateData = document.getElementById("date").value;
-		var lbsData = document.getElementById("lbs").checked;
-
-		if(lbsData == true){
-		    lbsData = 1;
-        }else{
-		    lbsData = 0;
-        }
+    addClient.addEventListener("click", function(event){
+		var fNameData = $("#fName").val();
+		var lNameData = $("#lName").val();
+		var phoneData = $("#phone").val();
+		var emailData = $("#email").val();
+		var houseNumData = $("#houseNum").val();
+		var streetData = $("#street").val();
+		var cityData = $("#city").val();
+		var stateData = $("#state").val();
+		var zipData = $("#zip").val();
 
 		var payload = {
-			name : nameData,
-			reps : repsData,
-			weight : weightData,
-			date : dateData,
-			lbs : lbsData
+			fName : fNameData,
+			lName : lNameData,
+			phone : phoneData,
+			email : emailData,
+			houseNum : houseNumData,
+			street : streetData,
+			city : cityData,
+			state : stateData,
+			zip : zipData
 		}
 		
-		//document.getElementById("thetable").appendChild(addRow(payload));
-        document.getElementsByClassName("mytable")[0].appendChild(addRow(payload));
 		console.log(payload);
 
 		$.post("http://flip1.engr.oregonstate.edu:24561/post", payload, function(data){
@@ -43,9 +57,8 @@ function setup(){
 		});
 		
 		event.preventDefault();
-	}); 
+	}); 	
 	
-
 
     $.get("http://flip1.engr.oregonstate.edu:24561/get", function(data){
         console.log(data);
@@ -82,6 +95,10 @@ function loadTable(){
             document.getElementsByClassName("mytable")[0].appendChild(addRow(data[i]));
         }
     });
+}
+
+function addClient(payload){
+	
 }
 
 function addRow(payload){

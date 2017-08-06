@@ -30,6 +30,10 @@ td, th{
 	width: 150px;
 }
 
+.hidden{
+	display: none;
+}
+
 .modal{
 	display: none;
 	position: absolute;
@@ -45,10 +49,10 @@ td, th{
 
 .modal-content {
 	background-color: #fefefe;
-	margin: 15% auto;
+	margin: auto;
 	padding: 20px;
 	border: 1px solid #888;
-	width: 30%;
+	width: 40%;
 }
 
 .modal > .success-content .error-content{
@@ -78,6 +82,10 @@ td, th{
 	display: block;
 }
 
+#tableSelector {
+	display: none;
+}
+
 .mytable{
 	margin: auto;
 	border: 1px solid white;
@@ -86,11 +94,21 @@ td, th{
 	padding: 10px;
 }
 
+.inputBlock {
+
+}
+
 .btn{
 	border-color: rgba(0, 0, 0, 0.6);
 	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
 }
 
+.top-form {
+	margin: 5px;
+	padding: 10px;
+	display: block;
+	float: left;
+}
 
 .panel {
 	margin-bottom: 20px;

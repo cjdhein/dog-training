@@ -1,0 +1,154 @@
+<html>	
+
+<body>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="scripts/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/black-tie/jquery-ui.css"‌​>
+	<link rel="stylesheet" href="style/style.css">
+	
+	
+	<div class="panel panel-primary">
+		<div class="panel-header">
+			<h4 class="panel-title">What would you like to do?</h4>
+		</div>
+		<div class="panel-body">
+			<form id="actionSelector" class="top-form">
+				<p><label>Action: </label></span>
+				<p><input type="radio" name="action" value="add"> Add </p>
+				<p><input type="radio" name="action" value="edit"> Edit</p>
+			</form>
+			<form id="tableSelector" class="top-form">
+				<p><label>What sort of element are we dealing with? </label></p>
+				<p><input type="radio" name="table" value="client"> Client </p>
+				<p><input type="radio" name="table" value="dog"> Dog </p>
+			</form>
+		</div>
+	</div>
+	<div id="addClientModal" class="modal fade">
+		<div id ="addpanel" class=" modal-content panel panel-primary">
+			<div class="panel-heading">Add Exercise</div>
+			<div class="panel-body">
+				<form class="mainform" method="post" id="addRecord">
+					<h4>Add New Client</h4>
+					<div class="inputBlock">
+						<fieldset> <legend>Name</legend>						
+							<span><label>First Name:</label><input type="text" id="fName"></span>
+							<span><label>Last Name:</label><input type="text" id="lName"></span>
+						</fieldset>
+						<fieldset> <legend>Contact Info</legend>						
+							<span><label>Phone:</label><input type="tel" id="phone"></span>
+							<span><label>Email:</label><input type="email" id="email"></span>
+						</fieldset>						
+					</div>
+					<div class="inputBlock">
+						<fieldset> <legend>Address</legend>
+							<span><label>House Number:</label><input type="text" id="houseNum"></span>
+							<span><label>Street:</label><input type="text" id="street"></span>
+							<span><label>City:</label><input type="text" id="city"></span>
+							<span><label>State:</label>
+								<select id="state">
+									<option value="AL">AL</option>
+									<option value="AK">AK</option>
+									<option value="AR">AR</option>	
+									<option value="AZ">AZ</option>
+									<option value="CA">CA</option>
+									<option value="CO">CO</option>
+									<option value="CT">CT</option>
+									<option value="DC">DC</option>
+									<option value="DE">DE</option>
+									<option value="FL">FL</option>
+									<option value="GA">GA</option>
+									<option value="HI">HI</option>
+									<option value="IA">IA</option>	
+									<option value="ID">ID</option>
+									<option value="IL">IL</option>
+									<option value="IN">IN</option>
+									<option value="KS">KS</option>
+									<option value="KY">KY</option>
+									<option value="LA">LA</option>
+									<option value="MA">MA</option>
+									<option value="MD">MD</option>
+									<option value="ME">ME</option>
+									<option value="MI">MI</option>
+									<option value="MN">MN</option>
+									<option value="MO">MO</option>	
+									<option value="MS">MS</option>
+									<option value="MT">MT</option>
+									<option value="NC">NC</option>	
+									<option value="NE">NE</option>
+									<option value="NH">NH</option>
+									<option value="NJ">NJ</option>
+									<option value="NM">NM</option>			
+									<option value="NV">NV</option>
+									<option value="NY">NY</option>
+									<option value="ND">ND</option>
+									<option value="OH">OH</option>
+									<option value="OK">OK</option>
+									<option value="OR">OR</option>
+									<option value="PA">PA</option>
+									<option value="RI">RI</option>
+									<option value="SC">SC</option>
+									<option value="SD">SD</option>
+									<option value="TN">TN</option>
+									<option value="TX">TX</option>
+									<option value="UT">UT</option>
+									<option value="VT">VT</option>
+									<option value="VA">VA</option>
+									<option value="WA">WA</option>
+									<option value="WI">WI</option>	
+									<option value="WV">WV</option>
+									<option value="WY">WY</option>
+								</select>								
+							</span>
+							<span><label>Zip:</label><input type="text" id="zip"></span>							
+						</fieldset>						
+					</div>
+					<span><button class="btn btn-default" id="addClient"> Add Client</button></span>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div id="tablepanel" class="panel panel-default panel-body">
+
+	</div>
+
+	<div id="editModal" class="modal fade">
+		<div class="modal-content panel panel-default">
+			<div class="panel-header">
+				<h4 class="modal-title">Edit Record</h4>
+			</div>
+			<div class="panel-body">
+				<form class="mainform" method="post" id="editRecord">
+					<div class="edit-form">
+						<span><label>Exercise name:</label><input type="text" id="exercise"></span>
+						<span><label>Reps:</label><input type="number" id="reps"></span>
+						<span><label>Weight:</label><input type="number" id="weight"></span>
+						<span><label>Date:</label><input type="text" id="date"></span>
+						<span><label>Check if weight is in lbs </label><input type="checkbox" id="lbs"></span>
+						<input type="hidden" id="databaseId">
+						<button class="btn btn-default" id="submitEdit">Update</button>
+						<button class="btn btn-default" id="closeEdit">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div id="successModal" class="modal">
+		<div class="modal-content success-content">
+			<div class="alert alert-success"> <span>Success: </span>Your request has been completed.</div>
+		</div>
+	</div>
+
+	<div id="errorModal" class="modal">
+		<div class="modal-content error-content">
+			<div class="alert alert-error"> <span>Error: </span>Something went wrong!</div>
+		</div>
+	</div>
+
+
+<script src="scripts/script.js"></script>
+</body>
+
+</html>
