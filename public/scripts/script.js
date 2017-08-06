@@ -51,7 +51,7 @@ function setup(){
 		
 		console.log(payload);
 
-		$.post("http://flip1.engr.oregonstate.edu:24561/post", payload, function(data){
+		$.post("http://flip2.engr.oregonstate.edu:24561/post", payload, function(data){
 			console.log("posted");
 			loadTable();
 		});
@@ -60,7 +60,7 @@ function setup(){
 	}); 	
 	
 
-    $.get("http://flip1.engr.oregonstate.edu:24561/get", function(data){
+    $.get("http://flip2.engr.oregonstate.edu:24561/get", function(data){
         console.log(data);
         loadTable(data);
     });
@@ -76,7 +76,7 @@ function resetForm(){
 
 function loadTable(){
 
-    $.get("http://flip1.engr.oregonstate.edu:24561/get", function(data){
+    $.get("http://flip2.engr.oregonstate.edu:24561/get", function(data){
         console.log(data);
         var table = $(".mytable");
         $(".mytable tr").remove();
@@ -176,7 +176,7 @@ function addRow(payload){
 
 					console.log(updatedData);
 
-					$.post("http://flip1.engr.oregonstate.edu:24561/edit", updatedData, function(result){
+					$.post("http://flip2.engr.oregonstate.edu:24561/edit", updatedData, function(result){
                         modal.style.display = "none";
 
 					    if(result == "ok"){
@@ -223,7 +223,7 @@ function addRow(payload){
 
 			    console.log("delete clicked on " + id);
 
-			    $.post("http://flip1.engr.oregonstate.edu:24561/delete", {id : id}, function(result){
+			    $.post("http://flip2.engr.oregonstate.edu:24561/delete", {id : id}, function(result){
 
                     if(result == "ok"){
                         var successModal = document.getElementById("successModal");

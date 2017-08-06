@@ -73,7 +73,7 @@ app.post('/post', function(req,res, next){
     var fromClient = req.body; //data passed in post request
 	
     console.log(fromClient);
-    pool.query('INSERT INTO client SET firstname=?, lastName=?, houseNum=? , street=? , city=? , state=? , zip=? , phone=? , email=?',
+    pool.query('INSERT INTO Client SET firstname=?, lastName=?, houseNum=? , street=? , city=? , state=? , zip=? , phone=? , email=?',
         [fromClient.fName, fromClient.lName, fromClient.houseNum, fromClient.street, fromClient.city, fromClient.state, fromClient.zip, fromClient.phone, fromClient.email],
 		function(err, result){
 			if(err){
