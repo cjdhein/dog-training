@@ -90,7 +90,7 @@ function resetClientForm(){
 }
 
 function getUnownedDogs(){
-
+	
     $.get("http://flip2.engr.oregonstate.edu:24561/get-unowned", function(data){
         console.log(data);
 		        
@@ -100,7 +100,7 @@ function getUnownedDogs(){
 
 function loadClients(){
 
-    $.get("http://flip2.engr.oregonstate.edu:24561/get", function(data){
+    $.get("http://flip2.engr.oregonstate.edu:24561/get-clients", function(data){
         console.log(data);
         var table = $(".mytable");
         $(".mytable tr").remove();

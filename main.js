@@ -53,11 +53,26 @@ app.get('/',function(req,res, next){
     res.render('home', context);
 });
 
-app.get('/get',function(req,res, next){
+app.get('/get-clients',function(req,res, next){
     var context = {};
     console.log(req.query);
 
     pool.query("SELECT CONCAT(firstName, ' ', lastName) AS Name, CONCAT(houseNum, ' ', street, ', ', city, ', ', state, ' ', zip) AS Address, phone, email FROM Client;", function(err, rows, fields){
+        if(err){
+            next(err);
+            return;
+        }
+        console.log(rows);
+       res.send(rows);
+
+    });
+});
+
+app.get('/get-unowned',function(req,res, next){
+    var context = {};
+    console.log(req.query);
+
+    pool.query("SELECT CONCAT('name', ', ', breed FROM Dog LEFT JOIN Dog_ownership on idDog = fk_idDog WHERE fk_idDog IS NULL;", function(err, rows, fields){
         if(err){
             next(err);
             return;
