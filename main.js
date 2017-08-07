@@ -57,7 +57,7 @@ app.get('/get',function(req,res, next){
     var context = {};
     console.log(req.query);
 
-    pool.query('SELECT * FROM workouts', function(err, rows, fields){
+    pool.query("SELECT CONCAT(firstName, ' ', lastName) AS Name, CONCAT(houseNum, ' ', street, ', ', city, ', ', state, ' ', zip) AS Address, phone, email FROM Client;", function(err, rows, fields){
         if(err){
             next(err);
             return;

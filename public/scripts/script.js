@@ -53,35 +53,47 @@ function setup(){
 
 		$.post("http://flip2.engr.oregonstate.edu:24561/post", clientPayload, function(data){
 			console.log("posted");
-			loadTable();
+			loadClients();
 		});
 		
 		event.preventDefault();
 	}); 	
 	
+	$("#closeClientForm").click(function(event){
+		$addClientModal.hide();
+		resetClientForm();
+		$actionSelectForm[0].reset();
+		$tableSelectForm[0].reset();
+		$tableSelectForm.hide();
+		event.preventDefault();
+	});
 
     $.get("http://flip2.engr.oregonstate.edu:24561/get", function(data){
         console.log(data);
-        loadTable(data);
+        loadClients(data);
     });
 }
 
-function resetForm(){
-	 document.getElementById("exercise").value = "";
-	 document.getElementById("weight").value = "";
-	 document.getElementById("reps").value = "";
-	 document.getElementById("date").value = "";
-	 document.getElementById("lbs").checked = false;	
+function resetClientForm(){
+		$("#fName").val("");
+		$("#lName").val("");
+		$("#phone").val("");
+		$("#email").val("");
+		$("#houseNum").val("");
+		$("#street").val("");
+		$("#city").val("");
+		$("#state").val("");
+		$("#zip").val("");	
 }
 
-function loadTable(){
+function loadClients(){
 
     $.get("http://flip2.engr.oregonstate.edu:24561/get", function(data){
         console.log(data);
         var table = $(".mytable");
         $(".mytable tr").remove();
         var headerRow = document.createElement("tr");
-        for(var i = 0; i < 6; i++){
+        for(var i = 0; i < 4; i++){
             var headCell = document.createElement("th");
             headCell.className = "headCell";
             headCell.id = ("head" + (i+1));
@@ -92,18 +104,14 @@ function loadTable(){
         labelColumns();
         for(var i = 0; i < data.length; i++) {
 
-            document.getElementsByClassName("mytable")[0].appendChild(addRow(data[i]));
+            document.getElementsByClassName("mytable")[0].appendChild(addClient(data[i]));
         }
     });
 }
 
 function addClient(payload){
-	
-}
-
-function addRow(payload){
 	var newRow = document.createElement("tr");
-	for(var i = 0; i < 9; i++){
+	for(var i = 0; i < 4; i++){
 		var subCell = document.createElement("td");
 		subCell.id = "cell" + i;
 		subCell.className = "dataCell";
@@ -194,7 +202,7 @@ function addRow(payload){
                         }
 
 
-                        loadTable();
+                        loadClients();
                     });
 
 
@@ -238,7 +246,7 @@ function addRow(payload){
                             $("#errorModal").fadeOut('fast');
                         }, 2000);
                     }
-                    loadTable();
+                    loadClients();
                 });
 
 				event.preventDefault();
@@ -258,33 +266,25 @@ function addRow(payload){
 		newRow.appendChild(subCell);		
 	}
 	var newCells = newRow.childNodes;
-	newCells[0].textContent = payload.firstName;
-	newCells[1].textContent = payload.lastName;
-	newCells[2].textContent = payload.houseNum;
-	newCells[3].textContent = payload.street;
-	newCells[4].textContent = payload.city;
-	newCells[5].textContent = payload.state;
-	newCells[6].textContent = payload.zip;
-	newCells[7].textContent = payload.phone;
-	newCells[8].textContent = payload.email;
+	newCells[0].textContent = payload.Name;
+	newCells[1].textContent = payload.Address;
+	newCells[2].textContent = payload.phone;
+	newCells[3].textContent = payload.email;
 
 	
-	
+	resetClientForm();
 	return newRow;
 }
 
 function labelColumns(){
 	document.getElementById("head1").textContent = "Name";
 	document.getElementById("head1").className = "nameCell";
-	document.getElementById("head2").textContent = "Reps";
-	document.getElementById("head2").className = "repCell";
-	document.getElementById("head3").textContent = "Weight";
-	document.getElementById("head3").className = "weightCell";
-	document.getElementById("head4").textContent = "Date";
-	document.getElementById("head4").className = "dateCell";
-	document.getElementById("head5").textContent = "lbs";
-	document.getElementById("head5").className = "lbsCell";
-	document.getElementById("head6").className = "buttonHeader";
+	document.getElementById("head2").textContent = "Address";
+	document.getElementById("head2").className = "addressCell";
+	document.getElementById("head3").textContent = "Phone";
+	document.getElementById("head3").className = "phoneCell";
+	document.getElementById("head4").textContent = "Email";
+	document.getElementById("head4").className = "emailCell";
 }
 
 function makeTable(){
