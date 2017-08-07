@@ -93,7 +93,10 @@ function getUnownedDogs(){
 	
     $.get("http://flip2.engr.oregonstate.edu:24561/get-unowned", function(data){
         console.log(data);
-		        
+		for(var i = 0; i < data.length; i++){
+			var opt = $("<option value='" + i + "'>" + data[i].dog + "</option>");
+			$("#unownedDogs").append(opt);
+		}        
     });	
 	
 }
