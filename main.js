@@ -72,7 +72,7 @@ app.get('/get-unowned',function(req,res, next){
     var context = {};
     console.log(req.query);
 
-    pool.query("SELECT CONCAT('name', ', ', breed FROM Dog LEFT JOIN Dog_ownership on idDog = fk_idDog WHERE fk_idDog IS NULL;", function(err, rows, fields){
+    pool.query("SELECT CONCAT('name', ', ', breed) AS dog FROM Dog LEFT JOIN Dog_ownership on idDog = fk_idDog WHERE fk_idDog IS NULL;", function(err, rows, fields){
         if(err){
             next(err);
             return;
