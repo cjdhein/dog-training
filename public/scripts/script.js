@@ -20,11 +20,14 @@ function setup(){
 	
 	$tableSelectForm.change( function(){
 		$addClientModal.show();
+		getUnownedDogs();
 	});
 	
 	$(function(){
 		$("#date").datepicker({dateFormat: 'yy-mm-dd'});
 	});
+	
+	$("#unownedDogs").
 	
     addClient.addEventListener("click", function(event){
 		var fNameData = $("#fName").val();
@@ -84,6 +87,15 @@ function resetClientForm(){
 		$("#city").val("");
 		$("#state").val("");
 		$("#zip").val("");	
+}
+
+function getUnownedDogs(){
+
+    $.get("http://flip2.engr.oregonstate.edu:24561/get-unowned", function(data){
+        console.log(data);
+		        
+    });	
+	
 }
 
 function loadClients(){
