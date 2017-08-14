@@ -268,8 +268,8 @@ function loadClients(){
 
     $.get("http://flip2.engr.oregonstate.edu:24561/get-clients", function(data){
         console.log(data);
-        var table = $(".mytable");
-        $(".mytable tr").remove();
+        var table = $("#thetable");
+        $("#thetable tr").remove();
         var headerRow = document.createElement("tr");
         for(var i = 0; i < 4; i++){
             var headCell = document.createElement("th");
@@ -282,7 +282,7 @@ function loadClients(){
         labelColumns();
         for(var i = 0; i < data.length-1; i++) {
 
-            document.getElementsByClassName("mytable")[0].appendChild(addClient(data[i]));
+            document.getElementById("thetable").appendChild(addClient(data[i]));
         }
     });
 }
