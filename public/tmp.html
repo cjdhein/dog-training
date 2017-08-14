@@ -11,6 +11,92 @@
     <link rel="stylesheet" href="style/style.css">
 </head>
 <body>
+	<div id="addClientModal" class="modal fade">
+		<div id ="addpanel" class=" modal-content panel panel-primary">
+			<div class="panel-heading">Add Client</div>
+			<div class="panel-body">
+				<form class="mainform" method="post" id="addRecord">
+					<h4>Add New Client</h4>
+					<div class="inputBlock">
+						<fieldset> <legend>Name</legend>
+							<span><label>First Name:</label><input type="text" id="fName"></span>
+							<span><label>Last Name:</label><input type="text" id="lName"></span>
+						</fieldset>
+						<fieldset> <legend>Contact Info</legend>
+							<span><label>Phone:</label><input type="tel" id="phone"></span>
+							<span><label>Email:</label><input type="email" id="email"></span>
+						</fieldset>
+					</div>
+					<div class="inputBlock">
+						<fieldset> <legend>Address</legend>
+							<span><label>House Number:</label><input type="text" id="houseNum"></span>
+							<span><label>Street:</label><input type="text" id="street"></span>
+							<span><label>City:</label><input type="text" id="city"></span>
+							<span><label>State:</label>
+								<select id="state">
+									<option value="AL">AL</option>
+									<option value="AK">AK</option>
+									<option value="AR">AR</option>
+									<option value="AZ">AZ</option>
+									<option value="CA">CA</option>
+									<option value="CO">CO</option>
+									<option value="CT">CT</option>
+									<option value="DC">DC</option>
+									<option value="DE">DE</option>
+									<option value="FL">FL</option>
+									<option value="GA">GA</option>
+									<option value="HI">HI</option>
+									<option value="IA">IA</option>
+									<option value="ID">ID</option>
+									<option value="IL">IL</option>
+									<option value="IN">IN</option>
+									<option value="KS">KS</option>
+									<option value="KY">KY</option>
+									<option value="LA">LA</option>
+									<option value="MA">MA</option>
+									<option value="MD">MD</option>
+									<option value="ME">ME</option>
+									<option value="MI">MI</option>
+									<option value="MN">MN</option>
+									<option value="MO">MO</option>
+									<option value="MS">MS</option>
+									<option value="MT">MT</option>
+									<option value="NC">NC</option>
+									<option value="NE">NE</option>
+									<option value="NH">NH</option>
+									<option value="NJ">NJ</option>
+									<option value="NM">NM</option>
+									<option value="NV">NV</option>
+									<option value="NY">NY</option>
+									<option value="ND">ND</option>
+									<option value="OH">OH</option>
+									<option value="OK">OK</option>
+									<option value="OR">OR</option>
+									<option value="PA">PA</option>
+									<option value="RI">RI</option>
+									<option value="SC">SC</option>
+									<option value="SD">SD</option>
+									<option value="TN">TN</option>
+									<option value="TX">TX</option>
+									<option value="UT">UT</option>
+									<option value="VT">VT</option>
+									<option value="VA">VA</option>
+									<option value="WA">WA</option>
+									<option value="WI">WI</option>
+									<option value="WV">WV</option>
+									<option value="WY">WY</option>
+								</select>
+							</span>
+							<span><label>Zip:</label><input type="text" id="zip"></span>
+						</fieldset>
+					</div>
+					<span><button class="btn btn-default" id="addClientbtn"> Add Client</button></span>
+					<span><button class="btn btn-default" id="closeClientForm"> Close </button></span>
+				</form>
+			</div>
+		</div>
+	</div>
+
 	<div class="panel panel-primary">
 		<div class="panel-header">
 			<h4 class="panel-title">What would you like to do?</h4>
@@ -47,96 +133,10 @@
 						<td><button class="buttonCell" id="open-addSessionbtn">Add Session</button>
 						<td><button class="buttonCell" id="open-editSessionbtn">Edit Session</button>
 						<td><button class="buttonCell" id="open-viewSessionbtn">View Sessions</button>
-					</tr>					
+					</tr>
 				</table>
 			</form>
 
-		</div>
-	</div>
-	
-	<div id="addClientModal" class="modal fade">
-		<div id ="addpanel" class=" modal-content panel panel-primary">
-			<div class="panel-heading">Add Client</div>
-			<div class="panel-body">
-				<form class="mainform" method="post" id="addRecord">
-					<h4>Add New Client</h4>
-					<div class="inputBlock">
-						<fieldset> <legend>Name</legend>						
-							<span><label>First Name:</label><input type="text" id="fName"></span>
-							<span><label>Last Name:</label><input type="text" id="lName"></span>
-						</fieldset>
-						<fieldset> <legend>Contact Info</legend>						
-							<span><label>Phone:</label><input type="tel" id="phone"></span>
-							<span><label>Email:</label><input type="email" id="email"></span>
-						</fieldset>						
-					</div>
-					<div class="inputBlock">
-						<fieldset> <legend>Address</legend>
-							<span><label>House Number:</label><input type="text" id="houseNum"></span>
-							<span><label>Street:</label><input type="text" id="street"></span>
-							<span><label>City:</label><input type="text" id="city"></span>
-							<span><label>State:</label>
-								<select id="state">
-									<option value="AL">AL</option>
-									<option value="AK">AK</option>
-									<option value="AR">AR</option>	
-									<option value="AZ">AZ</option>
-									<option value="CA">CA</option>
-									<option value="CO">CO</option>
-									<option value="CT">CT</option>
-									<option value="DC">DC</option>
-									<option value="DE">DE</option>
-									<option value="FL">FL</option>
-									<option value="GA">GA</option>
-									<option value="HI">HI</option>
-									<option value="IA">IA</option>	
-									<option value="ID">ID</option>
-									<option value="IL">IL</option>
-									<option value="IN">IN</option>
-									<option value="KS">KS</option>
-									<option value="KY">KY</option>
-									<option value="LA">LA</option>
-									<option value="MA">MA</option>
-									<option value="MD">MD</option>
-									<option value="ME">ME</option>
-									<option value="MI">MI</option>
-									<option value="MN">MN</option>
-									<option value="MO">MO</option>	
-									<option value="MS">MS</option>
-									<option value="MT">MT</option>
-									<option value="NC">NC</option>	
-									<option value="NE">NE</option>
-									<option value="NH">NH</option>
-									<option value="NJ">NJ</option>
-									<option value="NM">NM</option>			
-									<option value="NV">NV</option>
-									<option value="NY">NY</option>
-									<option value="ND">ND</option>
-									<option value="OH">OH</option>
-									<option value="OK">OK</option>
-									<option value="OR">OR</option>
-									<option value="PA">PA</option>
-									<option value="RI">RI</option>
-									<option value="SC">SC</option>
-									<option value="SD">SD</option>
-									<option value="TN">TN</option>
-									<option value="TX">TX</option>
-									<option value="UT">UT</option>
-									<option value="VT">VT</option>
-									<option value="VA">VA</option>
-									<option value="WA">WA</option>
-									<option value="WI">WI</option>	
-									<option value="WV">WV</option>
-									<option value="WY">WY</option>
-								</select>								
-							</span>
-							<span><label>Zip:</label><input type="text" id="zip"></span>							
-						</fieldset>
-					</div>
-					<span><button class="btn btn-default" id="addClientbtn"> Add Client</button></span>
-					<span><button class="btn btn-default" id="closeClientForm"> Close </button></span>
-				</form>
-			</div>
 		</div>
 	</div>
 
