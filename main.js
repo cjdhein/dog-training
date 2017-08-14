@@ -68,41 +68,42 @@ app.get('/get-clients',function(req,res, next){
     });
 });
 
-app.post('/dog-info', function(req,res,next){
-	var fromClient = req.body;
-	
-	switch(fromClient.option){
-		case 0: // all info (id, name, breed)
-			pool.query("SELECT idDog, name, breed FROM Dog", function(err,rows,fields){
-				if(err){
-					next(err);
-					return;
-				}
-				console.log(rows);
-				res.send(rows);
-			});
-			break;
-		case 1: // unowned dogs
-			pool.query("SELECT CONCAT(name, ', ', breed) AS dog, idDog FROM Dog LEFT JOIN Dog_ownership on idDog = fk_idDog WHERE fk_idDog IS NULL;", function(err, rows, fields){
-				if(err){
-					next(err);
-					return;
-				}
-				console.log(rows);
-			   res.send(rows);
+app.post('/dog-info', function(req,res,next) {
+    var fromClient = req.body;
 
-			});	
-			break;
-		case 2: // search breed
-			pool.query("SELECT idDog, name, breed FROM Dog WHERE breed LIKE '%?%';", [fromClient.searchData],
-				function(err, rows, fields){
-					if(err){
-						next(err);
-						return;
-					}
-					console.log(rows)
-					res.send(rows);
-				});
+    switch (fromClient.option) {
+        case 0: // all info (id, name, breed)
+            pool.query("SELECT idDog, name, breed FROM Dog", function (err, rows, fields) {
+                if (err) {
+                    next(err);
+                    return;
+                }
+                console.log(rows);
+                res.send(rows);
+            });
+            break;
+        case 1: // unowned dogs
+            pool.query("SELECT CONCAT(name, ', ', breed) AS dog, idDog FROM Dog LEFT JOIN Dog_ownership on idDog = fk_idDog WHERE fk_idDog IS NULL;", function (err, rows, fields) {
+                if (err) {
+                    next(err);
+                    return;
+                }
+                console.log(rows);
+                res.send(rows);
+
+            });
+            break;
+        case 2: // search breed
+            pool.query("SELECT idDog, name, breed FROM Dog WHERE breed LIKE '%?%';", [fromClient.searchData],
+                function (err, rows, fields) {
+                    if (err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(rows)
+                    res.send(rows);
+                });
+    }
 });
 
 
