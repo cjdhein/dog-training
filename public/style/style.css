@@ -180,7 +180,12 @@ td, th{
 .ui-datepicker-calendar{
 	width:250px !important;
 }
+
 .ui-datepicker-calendar th{
 	width:250px !important;
 	padding: 0px;
+}
+
+.datacell {
+	padding: 5px;
 }
