@@ -70,7 +70,7 @@ app.get('/get-clients',function(req,res, next){
 
 app.post('/dog-info', function(req,res,next) {
     var fromClient = req.body;
-
+	console.log(fromClient);
     switch (fromClient.option) {
         case 0: // all info (id, name, breed)
             pool.query("SELECT idDog, name, breed FROM Dog", function (err, rows, fields) {
