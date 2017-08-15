@@ -22,6 +22,7 @@ function setup(){
 	
 	$("#closeClientForm").click(function(event){
 		$addClientModal.hide();
+		loadClients();
 		resetClientForm();
 		event.preventDefault();
 	});	
