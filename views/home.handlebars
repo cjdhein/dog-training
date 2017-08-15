@@ -1,3 +1,51 @@
+
+<div class="panel panel-primary">
+    <div class="panel-header">
+        <h4 class="panel-title">What would you like to do?</h4>
+    </div>
+    <div class="panel-body">
+        <form id="actionSelector" class="top-form">
+            <table class="mytable">
+                <tr>
+                    <td><button class="buttonCell" id="open-addClientbtn">Add Client</button>
+                    <td><button class="buttonCell" id="open-editClientbtn">Edit Client</button>
+                    <td><button class="buttonCell" id="open-viewClientbtn">View Clients</button>
+                </tr>
+                <tr>
+                    <td><button class="buttonCell" id="open-addDogbtn">Add Dog</button>
+                    <td><button class="buttonCell" id="open-editDogbtn">Edit Dog</button>
+                    <td><button class="buttonCell" id="open-viewDogbtn">View Dogs</button>
+                </tr>
+                <tr>
+                    <td><button class="buttonCell" id="open-addPlanbtn">Add Plan</button>
+                    <td><button class="buttonCell" id="open-editPlanbtn">Edit Plan</button>
+                    <td><button class="buttonCell" id="open-viewPlanbtn">View Plans</button>
+                </tr>
+                <tr>
+                    <td><button class="buttonCell" id="open-addPackagebtn">Add Package</button>
+                    <td><button class="buttonCell" id="open-editPackagebtn">Edit Package</button>
+                    <td><button class="buttonCell" id="open-viewPackagebtn">View Packages</button>
+                </tr>
+                <tr>
+                    <td><button class="buttonCell" id="open-addSessionbtn">Add Session</button>
+                    <td><button class="buttonCell" id="open-editSessionbtn">Edit Session</button>
+                    <td><button class="buttonCell" id="open-viewSessionbtn">View Sessions</button>
+                </tr>
+            </table>
+        </form>
+
+    </div>
+</div>
+
+<div id="viewManageClients" class="panel hideable">
+    <div class="panel-heading">
+        <h3>Clients</h3>
+    </div>
+    <div class="panel-body">
+
+    </div>
+</div>
+
 <div id="addClientModal" class="modal fade">
     <div id ="addpanel" class=" modal-content panel panel-primary">
         <div class="panel-heading">Add Client</div>
@@ -84,46 +132,16 @@
     </div>
 </div>
 
-<div class="panel panel-primary">
-    <div class="panel-header">
-        <h4 class="panel-title">What would you like to do?</h4>
+<div id="viewManageDogs" class="panel hideable">
+    <div class="panel-heading">
+        <h3>Dogs</h3>
     </div>
     <div class="panel-body">
-        <form id="actionSelector" class="top-form">
-            <table class="mytable">
-                <tr>
-                    <th> Add </th>
-                    <th> Edit </th>
-                    <th> View </th>
-                </tr>
-                <tr>
-                    <td><button class="buttonCell" id="open-addClientbtn">Add Client</button>
-                    <td><button class="buttonCell" id="open-editClientbtn">Edit Client</button>
-                    <td><button class="buttonCell" id="open-viewClientbtn">View Clients</button>
-                </tr>
-                <tr>
-                    <td><button class="buttonCell" id="open-addDogbtn">Add Dog</button>
-                    <td><button class="buttonCell" id="open-editDogbtn">Edit Dog</button>
-                    <td><button class="buttonCell" id="open-viewDogbtn">View Dogs</button>
-                </tr>
-                <tr>
-                    <td><button class="buttonCell" id="open-addPlanbtn">Add Plan</button>
-                    <td><button class="buttonCell" id="open-editPlanbtn">Edit Plan</button>
-                    <td><button class="buttonCell" id="open-viewPlanbtn">View Plans</button>
-                </tr>
-                <tr>
-                    <td><button class="buttonCell" id="open-addPackagebtn">Add Package</button>
-                    <td><button class="buttonCell" id="open-editPackagebtn">Edit Package</button>
-                    <td><button class="buttonCell" id="open-viewPackagebtn">View Packages</button>
-                </tr>
-                <tr>
-                    <td><button class="buttonCell" id="open-addSessionbtn">Add Session</button>
-                    <td><button class="buttonCell" id="open-editSessionbtn">Edit Session</button>
-                    <td><button class="buttonCell" id="open-viewSessionbtn">View Sessions</button>
-                </tr>
-            </table>
+        <p>Search by Name</p>
+        <form class="mainform" method="post">
+            <p><label>Name: </label> <input type="text" id="dog-search-name"></p>
+            <button id="dog-search-name-btn">Search</button>
         </form>
-
     </div>
 </div>
 

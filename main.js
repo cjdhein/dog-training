@@ -93,8 +93,8 @@ app.post('/dog-info', function(req,res,next) {
 
             });
             break;
-        case 2: // search breed
-            pool.query("SELECT idDog, name, breed FROM Dog WHERE breed LIKE '%?%';", [fromClient.searchData],
+        case 2: // search name
+            pool.query("SELECT idDog, name, breed FROM Dog WHERE name LIKE '%?%';", [fromClient.searchData],
                 function (err, rows, fields) {
                     if (err) {
                         next(err);

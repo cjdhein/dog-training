@@ -30,7 +30,7 @@ td, th{
 	width: 150px;
 }
 
-.hidden{
+.hideable{
 	display: none;
 }
 
