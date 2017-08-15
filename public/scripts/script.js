@@ -7,27 +7,37 @@ $(document).ready(setup());
 
 function hideAll(){
 	$("#viewManageClients").hide();
+	$("#viewManageDogs").hide();
+	
 }
 
 function setup(){
     $("#tablepanel").append(makeTable());
     //document.body.appendChild(makeTable());
-    
-	var $actionSelectForm = $("#actionSelector");
-	var $tableSelectForm = $("#tableSelector");
-	var addClientbtn = document.getElementById("addClientbtn");
-	var $addClientModal = $("#addClientModal");
 	
+	setupClient();
+	setupDog();
+	setupPlan();
+	setupPackage();
+	setupSession();
+}
+
+function setupClient(){
+
+		
+/********************************************/
+/***************** Open/Close ***************/
+/********************************************/	
 	$("#open-addClientbtn").click(function(event){
-		$addClientModal.show();
+		$("#addClientModal").show();
 		//getUnownedDogs();
 		event.preventDefault();
 	});
 	
-	$("#closeClientForm").click(function(event){
-		$addClientModal.hide();
+	$("#close-addClientForm").click(function(event){
+		$("#addClientModal").hide();
 		loadClients();
-		resetClientForm();
+		resetAddClientForm();
 		event.preventDefault();
 	});
 
@@ -37,6 +47,115 @@ function setup(){
         event.preventDefault();
 	});
 	
+	$("#close-viewClientbtn").click(function(event){
+        hideAll();
+        event.preventDefault();
+	});		
+	
+	
+	/*submit buttons for add, edit, view*/
+	$("#addClientbtn").click(function(event){
+		var fNameData = $("#addNewClient > .fName").val();
+		var lNameData = $("#addNewClient > .lName").val();
+		var phoneData = $("#addNewClient > .phone").val();
+		var emailData = $("#addNewClient > .email").val();
+		var houseNumData = $("#addNewClient > .houseNum").val();
+		var streetData = $("#addNewClient > .street").val();
+		var cityData = $("#addNewClient > .city").val();
+		var stateData = $("#addNewClient > .state").val();
+		var zipData = $("#addNewClient > .zip").val();
+
+		var clientPayload = {
+			option : 'add',
+			fName : fNameData,
+			lName : lNameData,
+			phone : phoneData,
+			email : emailData,
+			houseNum : houseNumData,
+			street : streetData,
+			city : cityData,
+			state : stateData,
+			zip : zipData
+		}
+		
+		console.log(clientPayload);
+
+		$.post("http://flip2.engr.oregonstate.edu:24561/client", clientPayload, function(data){
+			console.log("posted");
+			loadClients();
+		});
+		
+		event.preventDefault();
+	});	
+	
+}
+
+function runEditClient(id) {
+	
+	payload = {
+		option : 'singleRecord',
+		idClient : id
+	}
+	
+	$.post("http://flip2.engr.oregonstate.edu:24561/client", payload, function(data){
+		console.log("posted");
+		
+		$("#editClient > .fName").val(data[0].firstName);
+		$("#editClient > .lName").val(data[0].lastName);
+		$("#editClient > .phone").val(data[0].phone);
+		$("#editClient > .email").val(data[0].email);
+		$("#editClient > .houseNum").val(data[0].houseNum);
+		$("#editClient > .street").val(data[0].street);
+		$("#editClient > .city").val(data[0].city);
+		$("#editClient > .state").val(data[0].state);
+		$("#editClient > .zip").val(data[0].zip);
+		$("#editclient > .idClient").val(data[0].idClient);
+		
+	});	
+	
+	$("#editClientbtn").click(function(event){
+		
+		var idClientData = $("#editclient > .idClient").val();
+		var fNameData = $("#editClient > .fName").val();
+		var lNameData = $("#editClient > .lName").val();
+		var phoneData = $("#editClient > .phone").val();
+		var emailData = $("#editClient > .email").val();
+		var houseNumData = $("#editClient > .houseNum").val();
+		var streetData = $("#editClient > .street").val();
+		var cityData = $("#editClient > .city").val();
+		var stateData = $("#editClient > .state").val();
+		var zipData = $("#editClient > .zip").val();
+
+		var clientPayload = {
+			option : 'edit',
+			idClient : idClientData,
+			fName : fNameData,
+			lName : lNameData,
+			phone : phoneData,
+			email : emailData,
+			houseNum : houseNumData,
+			street : streetData,
+			city : cityData,
+			state : stateData,
+			zip : zipData
+		}	
+		
+		$.post("http://flip2.engr.oregonstate.edu:24561/client", clientPayload, function(data){
+			console.log("posted");
+			//loadClients();
+		});
+		
+		
+		event.preventDefault();
+	});		
+}
+
+function setupDog(){
+
+	
+/********************************************/
+/***************** Open/Close ***************/
+/********************************************/
 	$("#open-addDogbtn").click(function(event){
 		$("#addDogModal").show();
 		//getUnownedDogs();
@@ -54,103 +173,47 @@ function setup(){
         $("#viewManageDogs").show();
 		event.preventDefault();
     });
-
-
-
+	
+	$("#close-viewDogForm").click(function(event){
+		hideAll();
+		event.preventDefault();
+	});
+	
+	/*submit buttons for add, edit, view*/
+	$("#dog-view-all-btn").click(function(event){
+		
+		var payload = {
+			option : 'viewAll'
+		}
+		
+        $.post("http://flip2.engr.oregonstate.edu:24561/dog", payload, function(data){
+            console.log("posted");
+            populateDogs(data);
+        });		
+		
+	});
+	
 	$("#dog-search-name-btn").click(function(event){
 
 		var nameSearchData = $("#dog-search-name").val();
 
 		var payload = {
-			option : 2,
+			option : 'nameSearch',
 			searchData : nameSearchData
 		}
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/dog-info", payload, function(data){
+        $.post("http://flip2.engr.oregonstate.edu:24561/dog", payload, function(data){
             console.log("posted");
             populateDogs(data);
         });
 
 		event.preventDefault();
-	});
-
-	$("#open-addPlanbtn").click(function(event){
-		$("#addPlanModal").show();
-		//getUnownedDogs();
-		event.preventDefault();
-	});		
-	
-	$("#close-addPlanbtn").click(function(event){
-		$("#addPlanModal").hide();
-		resetPlanForm();
-		event.preventDefault();
-	});		
-	
-	$("#open-addPackagebtn").click(function(event){
-		$("#addPackageModal").show();
-		//getUnownedDogs();
-		event.preventDefault();
 	});	
 
-	$("#close-addPackagebtn").click(function(event){
-		$("#addPackageModal").hide();
-		resetPackageForm();
-		event.preventDefault();
-	});		
-	
-	$("#open-addSessionbtn").click(function(event){
-		$("#addSessionModal").show();
-		//getUnownedDogs();
-		event.preventDefault();
-	});		
-	
-	$("#close-addSessionbtn").click(function(event){
-		$("#addSessionModal").hide();
-		resetSessionForm();
-		event.preventDefault();
-	});			
-	
-	$(function(){
-		$("#date").datepicker({dateFormat: 'yy-mm-dd'});
-	});
-	
-	$("#addClientbtn").click(function(event){
-		var fNameData = $("#fName").val();
-		var lNameData = $("#lName").val();
-		var phoneData = $("#phone").val();
-		var emailData = $("#email").val();
-		var houseNumData = $("#houseNum").val();
-		var streetData = $("#street").val();
-		var cityData = $("#city").val();
-		var stateData = $("#state").val();
-		var zipData = $("#zip").val();
-
-		var clientPayload = {
-			fName : fNameData,
-			lName : lNameData,
-			phone : phoneData,
-			email : emailData,
-			houseNum : houseNumData,
-			street : streetData,
-			city : cityData,
-			state : stateData,
-			zip : zipData
-		}
-		
-		console.log(clientPayload);
-
-		$.post("http://flip2.engr.oregonstate.edu:24561/post-client", clientPayload, function(data){
-			console.log("posted");
-			loadClients();
-		});
-		
-		event.preventDefault();
-	});
-
     $("#addDogbtn").click(function(event){
-		var nameData = $("#dogName").val();
-		var breedData = $("#dogBreed").val();
-		var ownerData = $("#dogOwners").val();
+		var nameData = $("#addNewDog > .dogName").val();
+		var breedData = $("#addNewDog > .dogBreed").val();
+		var ownerData = $("#addNewDog > .dogOwners").val();
 		
 		var dogPayload = {
 			name : nameData,
@@ -166,11 +229,105 @@ function setup(){
 		});
 		
 		event.preventDefault();
-	}); 	
+	}); 		
+	
 
+	
+	function populateDogs(data){
+		var div = $("#dogSearchResults");
+		$("#dogSearchResults tr").remove();
+		for(var i = 0; i < data.length; i++) {
+			var resultSpan = document.createElement("span");
+			var resultLabel = document.createElement("label");
+			var resultLink = document.createElement("button");
+			var hiddenId = document.createElement("input");
+			
+			resultLabel.textContent = data[i].name;
+			resultLink.id = "result" + (i+1);
+			resultLink.textContent = "View/Edit";
+			resultLink.addEventListener("click", function(event){
+				$("#editDogModal").show();
+				var id = resultLink.nextSibling.value;
+				runEditDog(id);
+				event.preventDefault();
+			});
+
+			hiddenId.type = "hidden";
+			hiddenId.name = "rowId";
+			hiddenId.value = data[i].idDog;
+			
+			resultSpan.appendChild(resultLabel);
+			resultSpan.appendChild(resultLink);
+			resultSpan.appendChild(hiddenId);
+		
+			div.append(resultSpan);
+		}
+	}	
+	
+}
+
+function runEditDog(id) {
+	
+	payload = {
+		option : 'singleRecord',
+		idDog : id
+	}
+	
+	$.post("http://flip2.engr.oregonstate.edu:24561/dog", payload, function(data){
+		console.log("posted");
+		
+		$("#editDog > .dogName").val(data[0].name);
+		$("#editDog > .dogBreed").val(data[0].breed);
+		$("#editDog > .idDog").val(data[0].idDog);
+		getClientsForSelection($("#dogOwners-view"));	
+		$("#editDog > .dogOwners").val(data[0].idClient);		
+	});	
+	
+	$("#editDogbtn").click(function(event){
+		var nameData = $("#editDog > .dogName").val();
+		var breedData = $("#editDog > .dogBreed").val();
+		var ownerData = $("#editDog > .dogOwners").val();
+		var idDogData = $("#editDog > .idDog").val();
+		payload = {
+			option : 'edit',
+			name : nameData,
+			breed : breedData,
+			idClient : ownerData,
+			idDog : idDogData
+		}
+		
+		$.post("http://flip2.engr.oregonstate.edu:24561/dog", payload, function(data){
+			console.log("posted");
+			//loadClients();
+		});
+		
+		
+		event.preventDefault();
+	});		
+}
+
+function setupPlan(){
+
+/********************************************/
+/***************** Open/Close ***************/
+/********************************************/
+
+	$("#open-addPlanbtn").click(function(event){
+		$("#addPlanModal").show();
+		//getUnownedDogs();
+		event.preventDefault();
+	});		
+	
+	$("#close-addPlanbtn").click(function(event){
+		$("#addPlanModal").hide();
+		resetPlanForm();
+		event.preventDefault();
+	});			
+	
+	
 	$("#addPlanbtn").click(function(event){
-		var nameData = $("#planName").val();
-		var descData = $("#planDesc").val();
+		var nameData = $("#addNewPlan > .planName").val();
+		var descData = $("#addNewPlan > .planDesc").val();
 		
 		var planPayload = {
 			name : nameData,
@@ -183,8 +340,27 @@ function setup(){
 			console.log("posted");
 			//loadClients();
 		});
-	});
+	});	
+}
+
+function setupPackage(){
 	
+	
+/********************************************/
+/***************** Open/Close ***************/
+/********************************************/	
+	$("#open-addPackagebtn").click(function(event){
+		$("#addPackageModal").show();
+		//getUnownedDogs();
+		event.preventDefault();
+	});	
+
+	$("#close-addPackagebtn").click(function(event){
+		$("#addPackageModal").hide();
+		resetPackageForm();
+		event.preventDefault();
+	});		
+
 	$("#addPackagebtn").click(function(event){
 		var nameData = $("#packageName").val();
 		var costData = $("#packageCost").val();
@@ -202,13 +378,36 @@ function setup(){
 			console.log("posted");
 			//loadClients();
 		});
+	});		
+	
+}
+
+function setupSession(){
+
+/********************************************/
+/***************** Open/Close ***************/
+/********************************************/
+	$("#open-addSessionbtn").click(function(event){
+		$("#addSessionModal").show();
+		//getUnownedDogs();
+		event.preventDefault();
+	});		
+	
+	$("#close-addSessionbtn").click(function(event){
+		$("#addSessionModal").hide();
+		resetSessionForm();
+		event.preventDefault();
+	});			
+	
+	$(function(){
+		$("#date").datepicker({dateFormat: 'yy-mm-dd'});
 	});	
 	
 	$("#addSessionbtn").click(function(event){
-		var dateData = $("#sessionDate").val();
-		var lengthData = $("#sessionLength").val();
-		var clientData = $("#sessionClient").val();
-		var planData = $("#sessionPlan").val();
+		var dateData = $("#addNewSession > .sessionDate").val();
+		var lengthData = $("#addNewSession > .sessionLength").val();
+		var clientData = $("#addNewSession > .sessionClient").val();
+		var planData = $("#addNewSession > .sessionPlan").val();
 		
 		var sessionPayload = {
 			date : dateData,
@@ -223,50 +422,55 @@ function setup(){
 			console.log("posted");
 			//loadClients();
 		});
-	});		
-
-    $.get("http://flip2.engr.oregonstate.edu:24561/get", function(data){
-        console.log(data);
-        loadClients(data);
-    });
+	});			
 }
 
-function resetClientForm(){
-		$("#fName").val("");
-		$("#lName").val("");
-		$("#phone").val("");
-		$("#email").val("");
-		$("#houseNum").val("");
-		$("#street").val("");
-		$("#city").val("");
-		$("#state").val("");
-		$("#zip").val("");	
+
+
+
+function resetAddClientForm(){
+	$("#addNewClient > .fName").val("");
+	$("#addNewClient > .lName").val("");
+	$("#addNewClient > .phone").val("");
+	$("#addNewClient > .email").val("");
+	$("#addNewClient > .houseNum").val("");
+	$("#addNewClient > .street").val("");
+	$("#addNewClient > .city").val("");
+	$("#addNewClient > .state").val("");
+	$("#addNewClient > .zip").val("");	
 }
 
 function resetDogForm(){
-		$("#dogName").val("");
-		$("#dogBreed").val("");
-		$("#dogOwners").val("");
+	$("#addNewDog > .dogName").val("");
+	$("#addNewDog > .dogBreed").val("");
+	$("#addNewDog > .dogOwners").val("");
 }
 
 function resetPlanForm(){
-		$("#planName").val("");
-		$("#planDesc").val("");
+	$("#addNewPlan > .planName").val("");
+	$("#addNewPlan > .planDesc").val("");
 }
 
 function resetPackageForm(){
-		$("#packageName").val("");
-		$("#packageCost").val("");
-		$("#numSessions").val("");
+	$("#addNewPackage > .packageName").val("");
+	$("#addNewPackage > .packageCost").val("");
+	$("#addNewPackage > .numSessions").val("");
+}
+
+function resetSessionForm(){
+	$("#addNewSession > .sessionDate").val("");
+	$("#addNewSession > .sessionLength").val("");
+	$("#addNewSession > .sessionClient").val("");
+	$("#addNewSession > .sessionPlan").val("");
 }
 
 function getUnownedDogs(){
 	
 	var payload = {
-		option : 1
+		option : 'unowned'
 	}
 	
-	$.post("http://flip2.engr.oregonstate.edu:24561/dog-info", payload, function(data){
+	$.post("http://flip2.engr.oregonstate.edu:24561/dog", payload, function(data){
 		console.log(data);
 		for(var i = 0; i < data.length; i++){
 			var opt = $("<option value='" + data[i].idDog + "'>" + data[i].dog + "</option>");
@@ -276,59 +480,24 @@ function getUnownedDogs(){
 	
 }
 
-function getClientsForSelection(){
+function getClientsForSelection(idToApplyTo){
 	
-	$.get("http://flip2.engr.oregonstate.edu:24561/get-clients-selection", function(data){
+	var payload = {
+		option : 'nameList'
+	}
+	
+	$.post("http://flip2.engr.oregonstate.edu:24561/client", payload, function(data){
 		console.log(data);
 		for(var i = 0; i < data.length; i++){
 			var opt = $("<option value='" + data[i].idClient + "'>" + data[i].Name + "</option>");
-			$("#dogOwners").append(opt);
+			idToApplyTo.append(opt);
 		} 		
 	});
 	
 }
 
-function getClients(){
-	
-    $.get("http://flip2.engr.oregonstate.edu:24561/get-clients", function(data){
-        console.log(data);
-		for(var i = 0; i < data.length; i++){
-			var opt = $("<option value='" + data[i].idClient + "'>" + data[i].Name + "</option>");
-			$("#dogOwners").append(opt);
-		}        
-    });	
-	
-}
 
-function populateDogs(data){
-    var table = $("#dogSearchResults");
-    $("#dogSearchResults tr").remove();
-    for(var i = 0; i < data.length; i++) {
-        var resultRow = document.createElement("tr");
-        var resultCell = document.createElement("td");
-        var resultSpan = document.createElement("span");
-        var resultLink = document.createElement("button");
-        resultSpan.textContent = data[i].name;
-        resultLink.id = "result" + (i+1);
-        resultLink.textContent = "View";
 
-        resultLink.addEventListener("click", function(event){
-        	$("#viewDogModal").show();
-			event.preventDefault();
-		});
-
-		var hiddenId = document.createElement("input");
-        hiddenId.type = "hidden";
-        hiddenId.name = "rowId";
-        hiddenId.value = data[i].idDog;
-
-        resultCell.appendChild(resultSpan);
-        resultCell.appendChild(resultLink);
-        resultCell.appendChild(hiddenId);
-        resultRow.appendChild(resultCell);
-		table.append(resultRow);
-    }
-}
 
 function loadClients(){
 
@@ -348,12 +517,12 @@ function loadClients(){
         labelColumns();
         for(var i = 0; i < data.length-1; i++) {
 
-            document.getElementById("thetable").appendChild(addClient(data[i]));
+            document.getElementById("thetable").appendChild(clientRow(data[i]));
         }
     });
 }
 
-function addClient(payload){
+function clientRow(payload){
 	var newRow = document.createElement("tr");
 	for(var i = 0; i < 5; i++){
 		var subCell = document.createElement("td");
