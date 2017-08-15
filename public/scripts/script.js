@@ -308,7 +308,7 @@ function populateDogs(data){
         var resultCell = document.createElement("td");
         var resultSpan = document.createElement("span");
         var resultLink = document.createElement("button");
-        resultSpan.text = data[i].name;
+        resultSpan.textContent = data[i].name;
         resultLink.id = "result" + (i+1);
         resultLink.textContent = "View";
 
