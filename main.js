@@ -31,23 +31,6 @@ var pool = mysql.createPool({
 });
 
 
-app.get('/reset-table',function(req,res,next){
-    var context = {};
-    pool.query("DROP TABLE IF EXISTS workouts", function(err){ //replace your connection pool with the your variable containing the connection pool
-        var createString = "CREATE TABLE workouts("+
-            "id INT PRIMARY KEY AUTO_INCREMENT,"+
-            "name VARCHAR(255) NOT NULL,"+
-            "reps INT,"+
-            "weight INT,"+
-            "date DATE,"+
-            "lbs BOOLEAN)";
-        pool.query(createString, function(err){
-            context.results = "Table reset";
-            res.render('home',context);
-        })
-    });
-});
-
 app.get('/',function(req,res, next){
     var  context = {results: "Words"};
     res.render('home', context);
@@ -68,7 +51,7 @@ app.get('/get-clients',function(req,res, next){
     });
 });
 
-app.post('/dog-info', function(req,res,next) {
+app.post('/dog', function(req,res,next) {
     var fromClient = req.body;
 	console.log(fromClient);
     switch (fromClient.option) {
@@ -82,7 +65,7 @@ app.post('/dog-info', function(req,res,next) {
                 res.send(rows);
             });
             break;
-        case '1': // unowned dogs
+        case 'unowned': // unowned dogs
             pool.query("SELECT CONCAT(name, ', ', breed) AS dog, idDog FROM Dog LEFT JOIN Dog_ownership on idDog = fk_idDog WHERE fk_idDog IS NULL;", function (err, rows, fields) {
                 if (err) {
                     next(err);
@@ -93,7 +76,7 @@ app.post('/dog-info', function(req,res,next) {
 
             });
             break;
-        case '2': // search name
+        case 'nameSearch': // search name
             pool.query("SELECT idDog, name, breed FROM Dog WHERE name LIKE ?;", '%' + [fromClient.searchData] + '%',
                 function (err, rows, fields) {
                     if (err) {
@@ -103,149 +86,135 @@ app.post('/dog-info', function(req,res,next) {
                     console.log(rows)
                     res.send(rows);
                 });
+			break;
+		case 'edit': //update dog
+			//confirm there is only one result; ie: confirm only one record with the unique id
+			pool.query('SELECT * FROM Dog WHERE idDog=?', [fromClient.idDog], function(err, result){
+				if(err){
+					next(err);
+					return;
+				}
+				
+				// if there was a single result
+				if(result.length == 1){
+					pool.query('UPDATE Dog SET name=?, breed=? WHERE idDog=?',
+					[fromClient.name, fromClient.breed, fromClient.idDog],
+					function(err, result){
+						if(err){
+							next(err);
+							return;
+						}
+						console.log(result);
+						res.send(result);
+					});
+					
+					pool.query('UPDATE Dog_ownership SET fk_idClient = ? WHERE fk_idDog = ?;', [fromClient.idClient, fromClient.idDog],
+					function(err, result){
+						if(err){
+							next(err);
+							return;
+						}
+						console.log(result);
+						res.send(result);
+					});
+					
+				}else{	//duplicate records with id exist
+					console.log("found more than one");
+					//send response to client
+					res.send('bad');
+				}
+			});
+			break;
+		case 'singleRecord':
+			pool.query("SELECT idDog, name, breed, CONCAT(firstName, ' ', lastName) AS Owner, idClient FROM Dog LEFT JOIN Dog_ownership ON idDog = fk_idDog LEFT JOIN Client ON idClient = fk_idClient WHERE idDog = ?;", [fromClient.idDog],
+				function(err,rows,fields) {
+					if(err) {
+						next(err),
+						return;
+					}
+					console.log(rows);
+					res.send(rows);
+				});
+			break;
+		case 'viewall':
+			pool.query("SELECT idDog, name, breed, CONCAT(firstName, ' ', lastName) AS Owner, idClient FROM Dog LEFT JOIN Dog_ownership ON idDog = fk_idDog LEFT JOIN Client ON idClient = fk_idClient;",
+			function(err,rows,fields) {
+				if(err) {
+					next(err),
+					return;
+				}
+				console.log(rows);
+				res.send(rows);
+			});
     }
 });
 
-
-app.get('/get-clients-selection',function(req,res, next){
-    var context = {};
-    console.log(req.query);
-
-    pool.query("SELECT idClient, CONCAT(Client.firstName, ' ', Client.lastName) AS Owner FROM Client;", function(err, rows, fields){
-        if(err){
-            next(err);
-            return;
-        }
-        console.log(rows);
-       res.send(rows);
-
-    });
-});
-
-app.get('/get-unowned-dogs',function(req,res, next){
-    var context = {};
-    console.log(req.query);
-
-    pool.query("SELECT CONCAT(name, ', ', breed) AS dog, idDog FROM Dog LEFT JOIN Dog_ownership on idDog = fk_idDog WHERE fk_idDog IS NULL;", function(err, rows, fields){
-        if(err){
-            next(err);
-            return;
-        }
-        console.log(rows);
-       res.send(rows);
-
-    });
-});
-
-app.post('/post-client', function(req,res, next){
-
-    var fromClient = req.body; //data passed in post request
+app.post('/client'), function(req,res,next) {
+	var fromClient = req.body;
+	console.log(fromClient);
 	
-    console.log(fromClient);
-    pool.query('INSERT INTO Client SET firstname=?, lastName=?, houseNum=? , street=? , city=? , state=? , zip=? , phone=? , email=?',
-        [fromClient.fName, fromClient.lName, fromClient.houseNum, fromClient.street, fromClient.city, fromClient.state, fromClient.zip, fromClient.phone, fromClient.email],
-		function(err, result){
-			if(err){
-				next(err);
-				return;
-			}
-			console.log(result);
-			res.send(result);
-	});
-
-});
-
-app.post('/edit-client', function(req,res, next){
-	
-	var fromClient = req.body; //data passed in post request
-
-    console.log(fromClient);
-
-	//confirm there is only one result; ie: confirm only one record with the unique id
-	pool.query('SELECT * FROM Client WHERE idClient=?', [fromClient.idClient], function(err, result){
-		if(err){
-			next(err);
-			return;
-		}
-
-		
-		// if there was a single result
-		if(result.length == 1){
-			pool.query('UPDATE Client SET firstname=?, lastName=?, houseNum=? , street=? , city=? , state=? , zip=? , phone=? , email=? WHERE idClient=?',
-			[fromClient.fName, fromClient.lName, fromClient.houseNum, fromClient.street, fromClient.city, fromClient.state, fromClient.zip, fromClient.phone, fromClient.email, fromClient.idClient],
-			function(err, result){
+	switch(fromClient.option){
+		case 'add':
+			pool.query('INSERT INTO Client SET firstname=?, lastName=?, houseNum=? , street=? , city=? , state=? , zip=? , phone=? , email=?',
+				[fromClient.fName, fromClient.lName, fromClient.houseNum, fromClient.street, fromClient.city, fromClient.state, fromClient.zip, fromClient.phone, fromClient.email],
+				function(err, result){
+					if(err){
+						next(err);
+						return;
+					}
+					console.log(result);
+					res.send(result);
+			});	
+			break;
+		case 'nameList': 
+			pool.query("SELECT idClient, CONCAT(Client.firstName, ' ', Client.lastName) AS Owner FROM Client;", function(err, rows, fields){
 				if(err){
 					next(err);
 					return;
 				}
-				console.log(result);
-				res.send(result);
-		});
-			
-		}else{	//duplicate records with id exist
-            console.log("found more than one");
-            //send response to client
-            res.send('bad');
-		}
-	});
+				console.log(rows);
+			   res.send(rows);
 
-});
+			});		
+			break;
+		case 'edit':
+			var fromClient = req.body; //data passed in post request
 
-app.post('/post-dog', function(req,res, next){
+			console.log(fromClient);
 
-    var fromClient = req.body; //data passed in post request
-	
-    console.log(fromClient);
-	
-    pool.query('INSERT INTO Dog SET name=?, breed=?;',
-        [fromClient.name, fromClient.breed],
-		function(err, result){
-			if(err){
-				next(err);
-				return;
-			}
-			console.log(result);
-			res.send(result);
-	});
-
-});
-
-app.post('/edit-dog', function(req,res, next){
-	
-	var fromClient = req.body; //data passed in post request
-
-
-    console.log(fromClient);
-
-	//confirm there is only one result; ie: confirm only one record with the unique id
-	pool.query('SELECT * FROM Dog WHERE idDog=?', [fromClient.idDog], function(err, result){
-		if(err){
-			next(err);
-			return;
-		}
-
-		
-		// if there was a single result
-		if(result.length == 1){
-			pool.query('UPDATE Dog SET name=?, breed=? WHERE idDog=?',
-			[fromClient.name, fromClient.breed, fromClient.idDog],
-			function(err, result){
+			//confirm there is only one result; ie: confirm only one record with the unique id
+			pool.query('SELECT * FROM Client WHERE idClient=?', [fromClient.idClient], function(err, result){
 				if(err){
 					next(err);
 					return;
 				}
-				console.log(result);
-				res.send(result);
-		});
-			
-		}else{	//duplicate records with id exist
-            console.log("found more than one");
-            //send response to client
-            res.send('bad');
-		}
-	});
 
-});
+				
+				// if there was a single result
+				if(result.length == 1){
+					pool.query('UPDATE Client SET firstname=?, lastName=?, houseNum=? , street=? , city=? , state=? , zip=? , phone=? , email=? WHERE idClient=?',
+					[fromClient.fName, fromClient.lName, fromClient.houseNum, fromClient.street, fromClient.city, fromClient.state, fromClient.zip, fromClient.phone, fromClient.email, fromClient.idClient],
+					function(err, result){
+						if(err){
+							next(err);
+							return;
+						}
+						console.log(result);
+						res.send(result);
+				});
+					
+				}else{	//duplicate records with id exist
+					console.log("found more than one");
+					//send response to client
+					res.send('bad');
+				}
+			});
+			break;
+		
+			
+	}
+}
+
 
 app.post('/post-plan', function(req,res,next){
 	
