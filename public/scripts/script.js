@@ -301,7 +301,7 @@ function getClients(){
 function populateDogs(data){
     var table = $("#thetable");
     $("#thetable tr").remove();
-    for(var i = 0; i < data.length-1; i++) {
+    for(var i = 0; i < data.length; i++) {
         var resultRow = document.createElement("tr");
         var resultCell = document.createElement("td");
         var resultLink = document.createElement("a");
@@ -318,8 +318,8 @@ function populateDogs(data){
         resultCell.appendChild(resultLink);
         resultCell.appendChild(hiddenId);
         resultRow.appendChild(resultCell);
+		table.append(resultRow);
     }
-    table.append(resultRow);
 }
 
 function loadClients(){
@@ -392,6 +392,8 @@ function labelColumns(type){
 }
 
 function makeTable(){
+
+    $("#thetable").remove();
     var table = document.createElement("table");
     table.classList.add("mytable");
     table.id = "thetable";

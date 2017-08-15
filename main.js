@@ -72,7 +72,7 @@ app.post('/dog-info', function(req,res,next) {
     var fromClient = req.body;
 	console.log(fromClient);
     switch (fromClient.option) {
-        case 0: // all info (id, name, breed)
+        case '0': // all info (id, name, breed)
             pool.query("SELECT idDog, name, breed FROM Dog", function (err, rows, fields) {
                 if (err) {
                     next(err);
@@ -82,7 +82,7 @@ app.post('/dog-info', function(req,res,next) {
                 res.send(rows);
             });
             break;
-        case 1: // unowned dogs
+        case '1': // unowned dogs
             pool.query("SELECT CONCAT(name, ', ', breed) AS dog, idDog FROM Dog LEFT JOIN Dog_ownership on idDog = fk_idDog WHERE fk_idDog IS NULL;", function (err, rows, fields) {
                 if (err) {
                     next(err);
@@ -93,8 +93,8 @@ app.post('/dog-info', function(req,res,next) {
 
             });
             break;
-        case 2: // search name
-            pool.query("SELECT idDog, name, breed FROM Dog WHERE name LIKE '%?%';", [fromClient.searchData],
+        case '2': // search name
+            pool.query("SELECT idDog, name, breed FROM Dog WHERE name LIKE ?;", '%' + [fromClient.searchData] + '%',
                 function (err, rows, fields) {
                     if (err) {
                         next(err);
