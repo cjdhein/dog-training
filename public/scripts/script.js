@@ -310,7 +310,8 @@ function populateDogs(data){
         var resultLink = document.createElement("button");
         resultSpan.text = data[i].name;
         resultLink.id = "result" + (i+1);
-        resultLink.text = View;
+        resultLink.textContent = "View";
+
         resultLink.addEventListener("click", function(event){
         	$("#viewDogModal").show();
 			event.preventDefault();
@@ -321,6 +322,7 @@ function populateDogs(data){
         hiddenId.name = "rowId";
         hiddenId.value = data[i].idDog;
 
+        resultCell.appendChild(resultSpan);
         resultCell.appendChild(resultLink);
         resultCell.appendChild(hiddenId);
         resultRow.appendChild(resultCell);
