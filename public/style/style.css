@@ -1,7 +1,7 @@
 
 
 body{
-	background-color: #404040;
+	background-color: #9e9d9d;
 	color: #cccccc;
 	font-family: Tahoma, Geneva, Arial;
 }
@@ -86,12 +86,24 @@ td, th{
 	display: none;
 }
 
+.resutstable{
+	margin: auto;
+	border: 1px solid lightgray;
+	border-spacing: 2px;
+
+}
+
+.resultstable > tr{
+	width: 50px;
+}
+
 .mytable{
 	margin: auto;
 	border: 1px solid white;
 	border-collapse: collapse;
 	border-spacing: 0;
 	padding: 10px;
+	background-color: lightgray;
 }
 
 .inputBlock {
@@ -112,7 +124,7 @@ td, th{
 
 .panel {
 	margin-bottom: 20px;
-	background-color: #2e3338;
+	background-color: #53595d;
 	border: 1px solid transparent;
 	border-radius: 4px;
 	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);

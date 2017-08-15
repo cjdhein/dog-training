@@ -107,8 +107,6 @@ app.post('/dog-info', function(req,res,next) {
 });
 
 
-
-
 app.get('/get-clients-selection',function(req,res, next){
     var context = {};
     console.log(req.query);

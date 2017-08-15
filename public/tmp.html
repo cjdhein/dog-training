@@ -5,7 +5,7 @@
     <title>Exercise Tracker </title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="scripts/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/black-tie/jquery-ui.css"‌​>
+    <!--<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/black-tie/jquery-ui.css"‌​>-->
 
 
     <link rel="stylesheet" href="style/style.css">
@@ -18,7 +18,7 @@
 		</div>
 		<div class="panel-body">
 			<form id="actionSelector" class="top-form">
-				<table class="mytable">
+				<table>
 					<tr>
 						<td><button class="buttonCell" id="open-addClientbtn">Add Client</button>
 						<td><button class="buttonCell" id="open-editClientbtn">Edit Client</button>
@@ -154,7 +154,27 @@
 			<form class="mainform" method="post">
 				<p><label>Name: </label> <input type="text" id="dog-search-name"></p>
 				<button id="dog-search-name-btn">Search</button>
+				<div id="#dogSearchResults">
+
+				</div>
 			</form>
+		</div>
+	</div>
+
+	<div id="viewDogModal" class="modal fade">
+		<div class=" modal-content panel panel-primary">
+			<div class="panel-heading">Add Dog</div>
+			<div class="panel-body">
+				<form class="mainform" method="post">
+					<div class="inputBlock">
+							<span><label>Name: </label><input type="text" id="dogName"></span>
+							<span><label>Breed: </label><input type="text" id="dogBreed"></span>
+							<span><label>Owned by:</label><label id="ownedById">Bob</label></span>
+					</div>
+					<span><button class="btn btn-default" id="addDogbtn"> Add Dog</button></span>
+					<span><button class="btn btn-default" id="closeDogForm"> Close </button></span>
+				</form>
+			</div>
 		</div>
 	</div>
 

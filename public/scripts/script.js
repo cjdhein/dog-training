@@ -55,6 +55,8 @@ function setup(){
 		event.preventDefault();
     });
 
+
+
 	$("#dog-search-name-btn").click(function(event){
 
 		var nameSearchData = $("#dog-search-name").val();
@@ -299,18 +301,22 @@ function getClients(){
 }
 
 function populateDogs(data){
-    var table = $("#thetable");
-    $("#thetable tr").remove();
+    var table = $("#dogSearchResults");
+    $("#dogSearchResults tr").remove();
     for(var i = 0; i < data.length; i++) {
         var resultRow = document.createElement("tr");
         var resultCell = document.createElement("td");
-        var resultLink = document.createElement("a");
-        resultLink.href = "#";
+        var resultSpan = document.createElement("span");
+        var resultLink = document.createElement("button");
+        resultSpan.text = data[i].name;
         resultLink.id = "result" + (i+1);
-        resultLink.text = data[i].name;
+        resultLink.text = View;
+        resultLink.addEventListener("click", function(event){
+        	$("#viewDogModal").show();
+			event.preventDefault();
+		});
 
-
-        var hiddenId = document.createElement("input");
+		var hiddenId = document.createElement("input");
         hiddenId.type = "hidden";
         hiddenId.name = "rowId";
         hiddenId.value = data[i].idDog;
