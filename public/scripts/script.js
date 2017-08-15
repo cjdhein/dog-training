@@ -319,7 +319,7 @@ function populateDogs(data){
         resultCell.appendChild(hiddenId);
         resultRow.appendChild(resultCell);
     }
-    table.appendChild(resultRow);
+    table.append(resultRow);
 }
 
 function loadClients(){
