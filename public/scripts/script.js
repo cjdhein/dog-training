@@ -40,12 +40,12 @@ function setupClient(){
 		$("#addClientModal").show();
 		//getUnownedDogs();
 		event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
 	});
 	
 	$("#close-addClientbtn").click(function(event){
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
 		resetAddClientForm();
 		$("#addClientModal").hide();
 	});
@@ -54,14 +54,14 @@ event.stopImmediatePropagation();
         hideAll();
         $("#viewManageClient").show();
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
 	});
 
     $("#close-editClientForm").click(function(event){
         resetEditClientForm();
         $("#editClientModal").hide();
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
     });
 	
 	
@@ -99,7 +99,7 @@ event.stopImmediatePropagation();
 
 		resetAddClientForm();
 		event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
 	});
 
 	/*submit buttons for add, edit, view*/
@@ -115,7 +115,7 @@ event.stopImmediatePropagation();
         });
 
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
 
     });
 
@@ -134,7 +134,7 @@ event.stopImmediatePropagation();
         });
 
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
     });
 
     function populateClients(data){
@@ -175,7 +175,7 @@ event.stopImmediatePropagation();
                 var id = event.currentTarget.nextSibling.value;
                 runEditClient(id);
                 event.preventDefault(); 
-event.stopImmediatePropagation();
+				event.stopImmediatePropagation();
             });
 
 
@@ -251,7 +251,7 @@ function runEditClient(id) {
 		resetEditClientForm();
 		$("#editClientModal").hide();
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
     });
 
     $("#deleteClientbtn").click(function(event){
@@ -269,7 +269,7 @@ event.stopImmediatePropagation();
         resetEditClientForm();
         $("#editClientModal").hide();
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
     });
 
 }
@@ -311,30 +311,31 @@ function setupDog(){
 /***************** Open/Close ***************/
 
 	$("#open-addDogbtn").click(function(event){
+		getClientsForSelection($("#addDogModal").find(".dogOwners"));
 		$("#addDogModal").show();
 		event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
 	});	
 
 	$("#close-addDogbtn").click(function(event){
 		resetAddDogForm();
         $("#addDogModal").hide();
 		event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
 	});	
 
 	$("#open-viewDogbtn").click(function(event){
         hideAll();
         $("#viewManageDog").show();
 		event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
     });
 	
 	$("#close-editDogForm").click(function(event){
         resetEditDogForm();
 		$("#editDogModal").hide();
 		event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
 	});
 	
 	/*submit buttons for add, edit, view*/
@@ -350,7 +351,7 @@ event.stopImmediatePropagation();
         });
 
 		event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
 		
 	});
 	
@@ -369,7 +370,7 @@ event.stopImmediatePropagation();
         });
 
 		event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
 	});	
 
     $("#addDogbtn").click(function(event){
@@ -392,7 +393,7 @@ event.stopImmediatePropagation();
 		});
 		resetAddDogForm();
 		event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
 	}); 		
 	
 
@@ -422,7 +423,7 @@ event.stopImmediatePropagation();
 				var id = event.currentTarget.nextSibling.value;
 				runEditDog(id);
 				event.preventDefault(); 
-event.stopImmediatePropagation();
+				event.stopImmediatePropagation();
 			});
 
 
@@ -482,7 +483,7 @@ function runEditDog(id) {
 		resetEditDogForm();
 		$("#editDogModal").hide();
 		event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
 	});
 
     $("#deleteDogbtn").click(function(event){
@@ -500,7 +501,7 @@ event.stopImmediatePropagation();
         resetEditDogForm();
         $("#editDogModal").hide();
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
     });
 }
 
@@ -736,28 +737,28 @@ function setupPackage(){
     $("#open-addPackagebtn").click(function(event){
         $("#addPackageModal").show();
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
     });
 
     $("#close-addPackagebtn").click(function(event){
         $("#addPackageModal").hide();
         resetAddPackageForm();
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
     });
 
     $("#open-viewPackagebtn").click(function(event){
         hideAll();
         $("#viewManagePackage").show();
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
     });
 
     $("#close-editPackageForm").click(function(event){
         resetEditPackageForm();
         $("#editPackageModal").hide();
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
     });
 
 	/*submit buttons for add, edit, view*/
@@ -773,7 +774,7 @@ event.stopImmediatePropagation();
         });
 
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
 
     });
 
@@ -792,7 +793,7 @@ event.stopImmediatePropagation();
         });
 
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
     });
 
     $("#addPackagebtn").click(function(event){
@@ -934,7 +935,7 @@ function runEditPackage(id) {
         resetEditPackageForm();
         $("#editPackageModal").hide();
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
     });
 
     $("#deletePackagebtn").click(function(event){
@@ -952,7 +953,7 @@ event.stopImmediatePropagation();
         resetEditPackageForm();
         $("#editPackageModal").hide();
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
     });
 }
 
@@ -983,7 +984,7 @@ function setupSession(){
     $("#open-addSessionbtn").on('click', function(event){
         event.preventDefault(); 
 		event.stopImmediatePropagation();
-        $("#addNewSession .sessionDate").datepicker({dateFormat: 'yy-mm-dd'});
+        //$("#addNewSession .sessionDate").datepicker({dateFormat: 'yy-mm-dd'});
     	getClientsForSelection($("#addSessionModal").find(".sessionClient"));
         $("#addSessionModal").show();
 
@@ -1000,6 +1001,7 @@ function setupSession(){
     $("#open-viewSessionbtn").click(function(event){
         hideAll();
         $("#viewManageSession").show();
+		//$("#viewManageSession").find(".sessionDate").datepicker({dateFormat: 'yy-mm-dd'});
         event.preventDefault(); 
 		event.stopImmediatePropagation();
 
@@ -1044,10 +1046,32 @@ function setupSession(){
             populateSessions(data);
         });
 
+		
         event.preventDefault(); 
-event.stopImmediatePropagation();
+		event.stopImmediatePropagation();
     });
 
+    $("#session-filter-date-btn").click(function(event){
+
+        var dateData = $("#viewManageSession").find(".sessionDate").val();
+		var typeData = $("input[name='dateSearch']:checked").val();
+
+        var payload = {
+            option : 'dateSearch',
+            date : dateData,
+			type : typeData
+        }
+
+        $.post("http://flip2.engr.oregonstate.edu:24561/Session", payload, function(data){
+            console.log("posted");
+            populateSessions(data);
+        });
+
+		
+        event.preventDefault(); 
+		event.stopImmediatePropagation();
+    });	
+	
     $("#addSessionbtn").click(function(event){
         var clientData = $("#addNewSession").find(".sessionClient").val();
         var dateData = $("#addNewSession").find(".sessionDate").val();

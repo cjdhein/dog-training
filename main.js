@@ -183,7 +183,7 @@ app.post('/dog', function(req,res,next) {
             });
             break;
         case 'unowned': // unowned dogs
-            pool.query("SELECT CONCAT(name, ', ', breed) AS dog, idDog FROM Dog LEFT JOIN Dog_ownership on idDog = fk_idDog WHERE fk_idDog IS NULL;", function (err, rows, fields) {
+            pool.query("SELECT CONCAT(name, ', ', breed) AS dog, idDog FROM Dog WHERE fk_idClient IS NULL;", function (err, rows, fields) {
                 if (err) {
                     next(err);
                     return;
@@ -215,8 +215,8 @@ app.post('/dog', function(req,res,next) {
 
                 // if there was a single result
                 if(result.length == 1){
-                    pool.query('UPDATE Dog SET name=?, breed=? WHERE idDog=?',
-                        [fromClient.name, fromClient.breed, fromClient.idDog],
+                    pool.query('UPDATE Dog SET name=?, breed=?, fk_idClient = ? WHERE idDog=?',
+                        [fromClient.name, fromClient.breed, fromClient.idClient, fromClient.idDog],
                         function(err, result){
                             if(err){
                                 next(err);
@@ -227,34 +227,6 @@ app.post('/dog', function(req,res,next) {
 
                         });
 
-                    pool.query('SELECT * FROM Dog_ownership WHERE fk_idDog=?', [fromClient.idDog],
-						function(err,result){
-                    	if(err){
-                    		next(err);
-							return;
-						}
-                        if(result.length == 0){
-                            pool.query('INSERT INTO Dog_ownership SET fk_idClient = ?, fk_idDog = ?;', [fromClient.idClient, fromClient.idDog],
-                                function(err, result){
-                                    if(err){
-                                        next(err);
-                                        return;
-                                    }
-                                    console.log(result);
-                                });
-                        }
-						if(result.length == 1){
-                            pool.query('UPDATE Dog_ownership SET fk_idClient = ? WHERE fk_idDog = ?;', [fromClient.idClient, fromClient.idDog],
-                                function(err, result){
-                                    if(err){
-                                        next(err);
-                                        return;
-                                    }
-                                    console.log(result);
-                                });
-						}
-					});8
-
                 }else{	//duplicate records with id exist
                     console.log("found more than one");
                     //send response to client
@@ -264,7 +236,7 @@ app.post('/dog', function(req,res,next) {
             });
             break;
         case 'singleRecord':
-            pool.query("SELECT idDog, name, breed, CONCAT(firstName, ' ', lastName) AS Owner, idClient FROM Dog LEFT JOIN Dog_ownership ON idDog = fk_idDog LEFT JOIN Client ON idClient = fk_idClient WHERE idDog = ?;", [fromClient.idDog],
+            pool.query("SELECT idDog, name, breed, CONCAT(firstName, ' ', lastName) AS Owner, idClient FROM Dog LEFT JOIN Client ON idClient = fk_idClient WHERE idDog = ?;", [fromClient.idDog],
                 function(err,rows,fields) {
                     if(err) {
                         next(err);
@@ -275,7 +247,7 @@ app.post('/dog', function(req,res,next) {
                 });
             break;
         case 'viewall':
-            pool.query("SELECT idDog, name, breed, CONCAT(firstName, ' ', lastName) AS Owner, idClient FROM Dog LEFT JOIN Dog_ownership ON idDog = fk_idDog LEFT JOIN Client ON idClient = fk_idClient;",
+            pool.query("SELECT idDog, name, breed, CONCAT(firstName, ' ', lastName) AS Owner, idClient FROM Dog LEFT JOIN  Client ON idClient = fk_idClient;",
                 function(err,rows,fields) {
                     if(err) {
                         next(err);
@@ -576,31 +548,20 @@ app.post('/session', function(req,res,next){
                     res.send(rows);
                 });
             break;
-
+        case 'dateSearch':
+            pool.query("SELECT idSession, date, CONCAT(firstName, ' ', lastName) AS client, CONCAT(length, ' hours') As duration FROM Session INNER JOIN Client ON fk_idClient = idClient WHERE date ? ?;", [fromClient.type, fromClient.date],
+                function(err,rows,fields) {
+                    if(err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(rows);
+                    res.send(rows);
+                });
+            break;
     }
 	
 });
-
-
-app.post('/post-client-dog-link', function(req,res,next){
-	
-    var fromClient = req.body; //data passed in post request
-	
-    console.log(fromClient);
-	
-    pool.query('INSERT INTO Dog_ownership SET fk_idDog=?, fk_idClient=?;',
-        [fromClient.fk_idDog, fromClient.fk_idClient],
-		function(err, result){
-			if(err){
-				next(err);
-				return;
-			}
-			console.log(result);
-			res.send(result);
-	});
-	
-});
-
 
 app.post('/package-contents', function(req,res,next){
 
@@ -633,6 +594,33 @@ app.post('/package-contents', function(req,res,next){
                     res.send(result);
                 });
             break;
+		case 'delete':
+            pool.query("SELECT * FROM Package_contents WHERE fk_idPackage=?, fk_idPlan=?;",
+                [fromClient.fk_idPackage, fromClient.fk_idPlan], function(err,result) {
+				if(err){
+					next(err);
+					return;						
+				}
+				if(result.length == 1) {
+					pool.query("DELETE FROM Package_contents WHERE fk_idPackage=?, fk_idPlan=?;",
+					[fromClient.fk_idPackage, fromClient.fk_idPlan], function(err,result) {
+					if(err){
+						next(err);
+						return;						
+					}
+					console.log(result);
+					res.send(result);
+					});
+				}
+				else {
+					console.log("Found more than one");
+					res.send('bad');
+				}
+
+			});
+			
+			break;
+			
 	}
 
 
