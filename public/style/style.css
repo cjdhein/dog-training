@@ -4,19 +4,15 @@ body{
 	background-color: #9e9d9d;
 	color: #cccccc;
 	font-family: Tahoma, Geneva, Arial;
-}
-
-span{
-	display: inline;
-	float: left;
-	margin: 10px;
+	width: 75%;
+	margin: auto;
 }
 
 label{
 	padding: 10px;
 }
 
-tr:nth-of-type(odd){
+tr{
 	background-color: #353a41;
 }
 
@@ -32,6 +28,29 @@ td, th{
 
 .hideable{
 	display: none;
+}
+
+#searchResultTable {
+	margin: auto;
+
+	display: block;
+}
+
+#searchResultTable td {
+	width : 200px;
+}
+
+#viewManageDog {
+
+
+}
+
+.actionSelectCell{
+	width: 40%;
+}
+
+.viewManageCell{
+	width: 60%;
 }
 
 .modal{
@@ -62,7 +81,7 @@ td, th{
 
 .mainform{
 
-	float: left;
+	margin:auto;
 }
 
 .buttonCell{
@@ -76,25 +95,8 @@ td, th{
 	display: block;
 }
 
-#tablepanel{
-	margin-left: 10%;
-	margin-right: 10%;
-	display: block;
-}
-
 #tableSelector {
 	display: none;
-}
-
-.resutstable{
-	margin: auto;
-	border: 1px solid lightgray;
-	border-spacing: 2px;
-
-}
-
-.resultstable > tr{
-	width: 50px;
 }
 
 .mytable{
@@ -144,6 +146,11 @@ td, th{
 	background-color: #5c6670;
 }
 
+.viewManageCell > .panel-heading {
+	padding: 2px;
+	margin: 2px;
+	height: 15px;
+}
 
 .panel-default {
 	border-color: rgba(0, 0, 0, 0.6);

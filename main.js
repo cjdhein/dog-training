@@ -51,11 +51,128 @@ app.get('/get-clients',function(req,res, next){
     });
 });
 
+
+
+app.post('/client', function(req,res,next) {
+    var fromClient = req.body;
+    console.log(fromClient);
+    switch (fromClient.option) {
+		case 'add':
+			pool.query('INSERT INTO Client SET firstname=?, lastName=?, houseNum=? , street=? , city=? , state=? , zip=? , phone=? , email=?;',
+				[fromClient.fName, fromClient.lName, fromClient.houseNum, fromClient.street, fromClient.city, fromClient.state, fromClient.zip, fromClient.phone, fromClient.email],
+				function(err, result){
+					if(err){
+						next(err);
+						return;
+					}
+					console.log(result);
+					res.send(result);
+			});	
+			break;
+		case 'nameList': 
+			pool.query("SELECT idClient, CONCAT(Client.firstName, ' ', Client.lastName) AS Owner FROM Client;", function(err, rows, fields){
+				if(err){
+					next(err);
+					return;
+				}
+				console.log(rows);
+			   	res.send(rows);
+			});		
+			break;
+		case 'edit':
+			//confirm there is only one result; ie: confirm only one record with the unique id
+			pool.query('SELECT * FROM Client WHERE idClient=?', [fromClient.idClient], function(err, result){
+				if(err){
+					next(err);
+					return;
+				}
+
+				
+				// if there was a single result
+				if(result.length == 1){
+					pool.query('UPDATE Client SET firstname=?, lastName=?, houseNum=? , street=? , city=? , state=? , zip=? , phone=? , email=? WHERE idClient=?;',
+					[fromClient.fName, fromClient.lName, fromClient.houseNum, fromClient.street, fromClient.city, fromClient.state, fromClient.zip, fromClient.phone, fromClient.email, fromClient.idClient],
+					function(err, result){
+						if(err){
+							next(err);
+							return;
+						}
+						console.log(result);
+						res.send(result);
+				});
+					
+				}else{	//duplicate records with id exist
+					console.log("found more than one");
+					//send response to client
+					res.send('bad');
+				}
+			});
+			break;
+		case 'viewAll':
+			pool.query("SELECT idClient, CONCAT(firstName, ' ', lastName) AS name, CONCAT(houseNum, ' ', street, ', ', city, ', ', state, ' ', zip) AS address, phone, email FROM Client;",
+			function(err,rows,fields) {
+				if(err){
+					next(err);
+					return;
+				}
+
+				console.log(rows);
+				res.send(rows);
+			});
+			break;
+        case 'delete':
+        	console.log(fromClient.idClient);
+            pool.query("DELETE FROM Client WHERE idClient=?;",fromClient.idClient,
+                function(err, result){
+                    if(err){
+                        next(err);
+                        return;
+                    }
+                    console.log(result);
+                });
+            break;
+        case 'nameSearch': // search name
+            pool.query("SELECT idClient, CONCAT(firstName, ' ', lastName) AS name, CONCAT(houseNum, ' ', street, ', ', city, ', ', state, ' ', zip) AS address, phone, email FROM Client WHERE firstName LIKE ? OR lastName LIKE ?;", ['%' + fromClient.searchData + '%', '%' + fromClient.searchData + '%'],
+                function (err, rows, fields) {
+                    if (err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(rows)
+                    res.send(rows);
+                });
+            break;
+        case 'singleRecord':
+            pool.query("SELECT idClient, firstName, lastName, houseNum, street, city, state, zip, phone, email FROM Client WHERE idClient=?;", [fromClient.idClient],
+                function(err,rows,fields) {
+                    if(err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(rows);
+                    res.send(rows);
+                });
+            break;
+	}
+});
+
 app.post('/dog', function(req,res,next) {
     var fromClient = req.body;
-	console.log(fromClient);
+    console.log(fromClient);
     switch (fromClient.option) {
-        case '0': // all info (id, name, breed)
+		case 'add':
+            pool.query('INSERT INTO Dog SET name=?, breed=?',
+                [fromClient.name, fromClient.breed],
+                function(err, result){
+                    if(err){
+                        next(err);
+                        return;
+                    }
+                    console.log(result);
+                    res.send(result);
+                });
+            break;
+        case 'viewAll': // all info (id, name, breed)
             pool.query("SELECT idDog, name, breed FROM Dog", function (err, rows, fields) {
                 if (err) {
                     next(err);
@@ -86,304 +203,384 @@ app.post('/dog', function(req,res,next) {
                     console.log(rows)
                     res.send(rows);
                 });
-			break;
-		case 'edit': //update dog
-			//confirm there is only one result; ie: confirm only one record with the unique id
-			pool.query('SELECT * FROM Dog WHERE idDog=?', [fromClient.idDog], function(err, result){
-				if(err){
-					next(err);
-					return;
-				}
-				
-				// if there was a single result
-				if(result.length == 1){
-					pool.query('UPDATE Dog SET name=?, breed=? WHERE idDog=?',
-					[fromClient.name, fromClient.breed, fromClient.idDog],
-					function(err, result){
-						if(err){
-							next(err);
+            break;
+        case 'edit': //update dog
+
+            //confirm there is only one result; ie: confirm only one record with the unique id
+            pool.query('SELECT * FROM Dog WHERE idDog=?', [fromClient.idDog], function(err, result){
+                if(err){
+                    next(err);
+                    return;
+                }
+
+                // if there was a single result
+                if(result.length == 1){
+                    pool.query('UPDATE Dog SET name=?, breed=? WHERE idDog=?',
+                        [fromClient.name, fromClient.breed, fromClient.idDog],
+                        function(err, result){
+                            if(err){
+                                next(err);
+                                return;
+                            }
+
+                            console.log(result);
+
+                        });
+
+                    pool.query('SELECT * FROM Dog_ownership WHERE fk_idDog=?', [fromClient.idDog],
+						function(err,result){
+                    	if(err){
+                    		next(err);
 							return;
 						}
-						console.log(result);
-						res.send(result);
-					});
-					
-					pool.query('UPDATE Dog_ownership SET fk_idClient = ? WHERE fk_idDog = ?;', [fromClient.idClient, fromClient.idDog],
-					function(err, result){
-						if(err){
-							next(err);
-							return;
+                        if(result.length == 0){
+                            pool.query('INSERT INTO Dog_ownership SET fk_idClient = ?, fk_idDog = ?;', [fromClient.idClient, fromClient.idDog],
+                                function(err, result){
+                                    if(err){
+                                        next(err);
+                                        return;
+                                    }
+                                    console.log(result);
+                                });
+                        }
+						if(result.length == 1){
+                            pool.query('UPDATE Dog_ownership SET fk_idClient = ? WHERE fk_idDog = ?;', [fromClient.idClient, fromClient.idDog],
+                                function(err, result){
+                                    if(err){
+                                        next(err);
+                                        return;
+                                    }
+                                    console.log(result);
+                                });
 						}
-						console.log(result);
-						res.send(result);
-					});
-					
-				}else{	//duplicate records with id exist
-					console.log("found more than one");
-					//send response to client
-					res.send('bad');
-				}
+					});8
+
+                }else{	//duplicate records with id exist
+                    console.log("found more than one");
+                    //send response to client
+                    res.send('bad');
+                }
+               res.send(result);
+            });
+            break;
+        case 'singleRecord':
+            pool.query("SELECT idDog, name, breed, CONCAT(firstName, ' ', lastName) AS Owner, idClient FROM Dog LEFT JOIN Dog_ownership ON idDog = fk_idDog LEFT JOIN Client ON idClient = fk_idClient WHERE idDog = ?;", [fromClient.idDog],
+                function(err,rows,fields) {
+                    if(err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(rows);
+                    res.send(rows);
+                });
+            break;
+        case 'viewall':
+            pool.query("SELECT idDog, name, breed, CONCAT(firstName, ' ', lastName) AS Owner, idClient FROM Dog LEFT JOIN Dog_ownership ON idDog = fk_idDog LEFT JOIN Client ON idClient = fk_idClient;",
+                function(err,rows,fields) {
+                    if(err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(rows);
+                    res.send(rows);
+                });
+            break;
+		case 'delete':
+			pool.query("DELETE FROM Dog WHERE idDog=?",[fromClient.idDog],
+                function(err, result){
+                    if(err){
+                        next(err);
+                        return;
+                    }
+                    console.log(result);
 			});
 			break;
-		case 'singleRecord':
-			pool.query("SELECT idDog, name, breed, CONCAT(firstName, ' ', lastName) AS Owner, idClient FROM Dog LEFT JOIN Dog_ownership ON idDog = fk_idDog LEFT JOIN Client ON idClient = fk_idClient WHERE idDog = ?;", [fromClient.idDog],
-				function(err,rows,fields) {
-					if(err) {
-						next(err),
-						return;
-					}
-					console.log(rows);
-					res.send(rows);
-				});
-			break;
-		case 'viewall':
-			pool.query("SELECT idDog, name, breed, CONCAT(firstName, ' ', lastName) AS Owner, idClient FROM Dog LEFT JOIN Dog_ownership ON idDog = fk_idDog LEFT JOIN Client ON idClient = fk_idClient;",
-			function(err,rows,fields) {
-				if(err) {
-					next(err),
-					return;
-				}
-				console.log(rows);
-				res.send(rows);
-			});
+
     }
 });
 
-app.post('/client'), function(req,res,next) {
-	var fromClient = req.body;
-	console.log(fromClient);
-	
-	switch(fromClient.option){
+app.post('/plan', function(req,res,next){
+    var fromClient = req.body;
+    console.log(fromClient);
+    switch (fromClient.option) {
 		case 'add':
-			pool.query('INSERT INTO Client SET firstname=?, lastName=?, houseNum=? , street=? , city=? , state=? , zip=? , phone=? , email=?',
-				[fromClient.fName, fromClient.lName, fromClient.houseNum, fromClient.street, fromClient.city, fromClient.state, fromClient.zip, fromClient.phone, fromClient.email],
-				function(err, result){
-					if(err){
-						next(err);
-						return;
-					}
-					console.log(result);
-					res.send(result);
-			});	
-			break;
-		case 'nameList': 
-			pool.query("SELECT idClient, CONCAT(Client.firstName, ' ', Client.lastName) AS Owner FROM Client;", function(err, rows, fields){
-				if(err){
-					next(err);
-					return;
-				}
-				console.log(rows);
-			   res.send(rows);
-
-			});		
-			break;
+            pool.query('INSERT INTO Plan SET name=?, description=?;',
+                [fromClient.name, fromClient.description],
+                function(err, result){
+                    if(err){
+                        next(err);
+                        return;
+                    }
+                    console.log(result);
+                    res.send(result);
+                });
+            break;
 		case 'edit':
-			var fromClient = req.body; //data passed in post request
+            //confirm there is only one result; ie: confirm only one record with the unique id
+            pool.query('SELECT * FROM Plan WHERE idPlan=?', [fromClient.idPlan], function(err, result){
+                if(err){
+                    next(err);
+                    return;
+                }
+                // if there was a single result
+                if(result.length == 1){
+                    pool.query('UPDATE Plan SET name=?, description=? WHERE idPlan=?',
+                        [fromClient.name, fromClient.description, fromClient.idPlan],
+                        function(err, result){
+                            if(err){
+                                next(err);
+                                return;
+                            }
+                            console.log(result);
+                            res.send(result);
+                        });
 
-			console.log(fromClient);
+                }else{	//duplicate records with id exist
+                    console.log("found more than one");
+                    //send response to client
+                    res.send('bad');
+                }
+            });
+            break;
+        case 'delete':
+            pool.query("DELETE FROM Plan WHERE idPlan=?",[fromClient.idPlan],
+                function(err, result){
+                    if(err){
+                        next(err);
+                        return;
+                    }
+                    console.log(result);
+                });
+            break;
+        case 'nameSearch': // search name
+            pool.query("SELECT idPlan, name FROM Plan WHERE name LIKE ?;", '%' + [fromClient.searchData] + '%',
+                function (err, rows, fields) {
+                    if (err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(rows)
+                    res.send(rows);
+                });
+            break;
+        case 'viewAll':
+            pool.query("SELECT idPlan, name, description FROM Plan;",
+                function(err,rows,fields) {
+                    if(err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(rows);
+                    res.send(rows);
+                });
+            break;
+        case 'singleRecord':
+            pool.query("SELECT idPlan, name, description FROM Plan WHERE idPlan = ?;", [fromClient.idPlan],
+                function(err,rows,fields) {
+                    if(err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(rows);
+                    res.send(rows);
+                });
+            break;
 
-			//confirm there is only one result; ie: confirm only one record with the unique id
-			pool.query('SELECT * FROM Client WHERE idClient=?', [fromClient.idClient], function(err, result){
-				if(err){
-					next(err);
-					return;
-				}
-
-				
-				// if there was a single result
-				if(result.length == 1){
-					pool.query('UPDATE Client SET firstname=?, lastName=?, houseNum=? , street=? , city=? , state=? , zip=? , phone=? , email=? WHERE idClient=?',
-					[fromClient.fName, fromClient.lName, fromClient.houseNum, fromClient.street, fromClient.city, fromClient.state, fromClient.zip, fromClient.phone, fromClient.email, fromClient.idClient],
-					function(err, result){
-						if(err){
-							next(err);
-							return;
-						}
-						console.log(result);
-						res.send(result);
-				});
-					
-				}else{	//duplicate records with id exist
-					console.log("found more than one");
-					//send response to client
-					res.send('bad');
-				}
-			});
-			break;
-		
-			
 	}
-}
-
-
-app.post('/post-plan', function(req,res,next){
-	
-    var fromClient = req.body; //data passed in post request
-	
-    console.log(fromClient);
-	
-    pool.query('INSERT INTO Plan SET name=?, description=?;',
-        [fromClient.name, fromClient.description],
-		function(err, result){
-			if(err){
-				next(err);
-				return;
-			}
-			console.log(result);
-			res.send(result);
-	});
-	
-});
-
-app.post('/edit-plan', function(req,res, next){
-	
-	var fromClient = req.body; //data passed in post request
-
-
-    console.log(fromClient);
-
-	//confirm there is only one result; ie: confirm only one record with the unique id
-	pool.query('SELECT * FROM Plan WHERE idPlan=?', [fromClient.idPlan], function(err, result){
-		if(err){
-			next(err);
-			return;
-		}
-
-		
-		// if there was a single result
-		if(result.length == 1){
-			pool.query('UPDATE Plan SET name=?, description=? WHERE idPlan=?',
-			[fromClient.name, fromClient.description, fromClient.idPlan],
-			function(err, result){
-				if(err){
-					next(err);
-					return;
-				}
-				console.log(result);
-				res.send(result);
-		});
-			
-		}else{	//duplicate records with id exist
-            console.log("found more than one");
-            //send response to client
-            res.send('bad');
-		}
-	});
-
 });
 
 
-app.post('/post-package', function(req,res,next){
-	
-    var fromClient = req.body; //data passed in post request
-	
+app.post('/package', function(req,res,next){
+    var fromClient = req.body;
     console.log(fromClient);
-	
-    pool.query('INSERT INTO Package SET name=?, cost=?, numIncludedSessions=?;',
-        [fromClient.name, fromClient.cost, fromClient.numIncludedSessions],
-		function(err, result){
-			if(err){
-				next(err);
-				return;
-			}
-			console.log(result);
-			res.send(result);
-	});
+    switch (fromClient.option) {
+        case 'add':
+            pool.query('INSERT INTO Package SET name=?, cost=?, numIncludedSessions=?;',
+                [fromClient.name, fromClient.cost, fromClient.numIncludedSessions],
+                function (err, result) {
+                    if (err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(result);
+                    res.send(result);
+                });
+            break;
+		case 'edit':
+            //confirm there is only one result; ie: confirm only one record with the unique id
+            pool.query('SELECT * FROM Package WHERE idPackage=?', [fromClient.idPackage], function(err, result){
+                if(err){
+                    next(err);
+                    return;
+                }
+
+
+                // if there was a single result
+                if(result.length == 1){
+                    pool.query('UPDATE Package SET name=?, cost=?, numIncludedSessions=? WHERE idPackage=?',
+                        [fromClient.name, fromClient.cost, fromClient.numIncludedSessions, fromClient.idPackage],
+                        function(err, result){
+                            if(err){
+                                next(err);
+                                return;
+                            }
+                            console.log(result);
+                            res.send(result);
+                        });
+
+                }else{	//duplicate records with id exist
+                    console.log("found more than one");
+                    //send response to client
+                    res.send('bad');
+                }
+            });
+            break;
+        case 'delete':
+            pool.query("DELETE FROM Package WHERE idPackage=?",[fromClient.idPackage],
+                function(err, result){
+                    if(err){
+                        next(err);
+                        return;
+                    }
+                    console.log(result);
+                });
+            break;
+        case 'nameSearch': // search name
+            pool.query("SELECT idPackage, name, cost, numIncludedSessions FROM Package WHERE name LIKE ?;", '%' + [fromClient.searchData] + '%',
+                function (err, rows, fields) {
+                    if (err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(rows)
+                    res.send(rows);
+                });
+            break;
+        case 'viewAll':
+            pool.query("SELECT idPackage, name, cost, CONCAT(numIncludedSessions, ' sessions') AS numSessions FROM Package;",
+                function(err,rows,fields) {
+                    if(err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(rows);
+                    res.send(rows);
+                });
+            break;
+        case 'singleRecord':
+            pool.query("SELECT idPackage, name, cost, numIncludedSessions FROM Package WHERE idPackage=?;", [fromClient.idPackage],
+                function(err,rows,fields) {
+                    if(err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(rows);
+                    res.send(rows);
+                });
+            break;
+    }
+});
+
+
+app.post('/session', function(req,res,next){
+    var fromClient = req.body;
+    console.log(fromClient);
+    switch (fromClient.option) {
+        case 'add':
+
+            if (fromClient.fk_idPlanTaught == '') {
+                pool.query('INSERT INTO Session SET date=?, length=?, fk_idClient=?;',
+                    [dateFormat(fromClient.date, "yyyy-mm-dd"), fromClient.length, fromClient.fk_idClient],
+                    function (err, result) {
+                        if (err) {
+                            next(err);
+                            return;
+                        }
+                        console.log(result);
+                        res.send(result);
+                    });
+            }
+            else {
+                pool.query('INSERT INTO Session SET date=?, length=?, fk_idClient=?, fk_idPlanTaught=?;',
+                    [dateFormat(fromClient.date, "yyyy-mm-dd"), fromClient.length, fromClient.fk_idClient, fromClient.fk_idPlanTaught],
+                    function (err, result) {
+                        if (err) {
+                            next(err);
+                            return;
+                        }
+                        console.log(result);
+                        res.send(result);
+                    });
+            }
+
+
+            break;
+        case 'edit':
+            //confirm there is only one result; ie: confirm only one record with the unique id
+            pool.query('SELECT * FROM Session WHERE idSession=?', [fromClient.idSession], function (err, result) {
+                if (err) {
+                    next(err);
+                    return;
+                }
+
+
+                // if there was a single result
+                if (result.length == 1) {
+                    pool.query('UPDATE Session SET date=?, length=?, fk_idClient=?, fk_idPlanTaught=? FROM Session WHERE idSession=?;',
+                        [dateFormat(fromClient.date, "yyyy-mm-dd"), fromClient.length, fromClient.fk_idClient, fromClient.fk_idPlanTaught, fromClient.idSession],
+                        function (err, result) {
+                            if (err) {
+                                next(err);
+                                return;
+                            }
+                            console.log(result);
+                            res.send(result);
+                        });
+
+                } else {	//duplicate records with id exist
+                    console.log("found more than one");
+                    //send response to client
+                    res.send('bad');
+                }
+            });
+            break;
+        case 'delete':
+            pool.query("DELETE FROM Session WHERE idSession=?", [fromClient.idSession],
+                function (err, result) {
+                    if (err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(result);
+                });
+            break;
+        case 'viewAll':
+            pool.query("SELECT idSession, date, CONCAT(firstName, ' ', lastName) AS client, CONCAT(length, ' hours') As duration FROM Session INNER JOIN Client ON fk_idClient = idClient;",
+                function (err, rows, fields) {
+                    if (err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(rows);
+                    res.send(rows);
+                });
+            break;
+        case 'singleRecord':
+            pool.query("SELECT idSession, date, length, fk_idClient, fk_idPlan WHERE idSession = ?;", [fromClient.idSession],
+                function(err,rows,fields) {
+                    if(err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(rows);
+                    res.send(rows);
+                });
+            break;
+
+    }
 	
 });
 
-app.post('/edit-package', function(req,res, next){
-	
-	var fromClient = req.body; //data passed in post request
-
-
-    console.log(fromClient);
-
-	//confirm there is only one result; ie: confirm only one record with the unique id
-	pool.query('SELECT * FROM Package WHERE idPackage=?', [fromClient.idPackage], function(err, result){
-		if(err){
-			next(err);
-			return;
-		}
-
-		
-		// if there was a single result
-		if(result.length == 1){
-			pool.query('UPDATE Package SET name=?, cost=?, numIncludedSessions=? WHERE idPackage=?',
-			[fromClient.name, fromClient.cost, fromClient.numIncludedSessions, fromClient.idPackage],
-			function(err, result){
-				if(err){
-					next(err);
-					return;
-				}
-				console.log(result);
-				res.send(result);
-		});
-			
-		}else{	//duplicate records with id exist
-            console.log("found more than one");
-            //send response to client
-            res.send('bad');
-		}
-	});
-
-});
-
-app.post('/post-session', function(req,res,next){
-	
-    var fromClient = req.body; //data passed in post request
-	
-    console.log(fromClient);
-	
-    pool.query('INSERT INTO Session SET date=?, length=?, fk_idClient=?, fk_idPlanTaught=?;',
-        [dateFormat(fromClient.date, "yyyy-mm-dd"), fromClient.length, fromClient.fk_idClient, fromClient.fk_idPlanTaught],
-		function(err, result){
-			if(err){
-				next(err);
-				return;
-			}
-			console.log(result);
-			res.send(result);
-	});
-	
-});
-
-app.post('/edit-session', function(req,res, next){
-	
-	var fromClient = req.body; //data passed in post request
-
-
-    console.log(fromClient);
-
-	//confirm there is only one result; ie: confirm only one record with the unique id
-	pool.query('SELECT * FROM Session WHERE idSession=?', [fromClient.idSession], function(err, result){
-		if(err){
-			next(err);
-			return;
-		}
-
-		
-		// if there was a single result
-		if(result.length == 1){
-			pool.query('UPDATE Session SET date=?, length=?, fk_idClient=?, fk_idPlanTaught=? WHERE idSession=?;',
-        [dateFormat(fromClient.date, "yyyy-mm-dd"), fromClient.length, fromClient.fk_idClient, fromClient.fk_idPlanTaught, fromClient.idSession],
-			function(err, result){
-				if(err){
-					next(err);
-					return;
-				}
-				console.log(result);
-				res.send(result);
-		});
-			
-		}else{	//duplicate records with id exist
-            console.log("found more than one");
-            //send response to client
-            res.send('bad');
-		}
-	});
-
-});
 
 app.post('/post-client-dog-link', function(req,res,next){
 	
@@ -405,22 +602,41 @@ app.post('/post-client-dog-link', function(req,res,next){
 });
 
 
-app.post('/post-plan-package-link', function(req,res,next){
-	
+app.post('/package-contents', function(req,res,next){
+
     var fromClient = req.body; //data passed in post request
 	
     console.log(fromClient);
-	
-    pool.query('INSERT INTO Package_contents SET fk_idPackage=?, fk_idPlan=?;',
-        [fromClient.fk_idPackage, fromClient.fk_idPlan],
-		function(err, result){
-			if(err){
-				next(err);
-				return;
-			}
-			console.log(result);
-			res.send(result);
-	});
+
+    switch(fromClient.option) {
+		case 'inPackage':
+			pool.query("SELECT fk_idPlan, Plan.name AS plName FROM Package_contents INNER JOIN Plan ON idPlan = fk_idPlan WHERE fk_idPackage = ?", [fromClient.idPackage],
+			function(err, rows, fields){
+				if(err){
+					next(err);
+					return;
+				}
+				console.log(rows);
+				res.send(rows);
+			});
+
+			break;
+		case 'add':
+            pool.query('INSERT INTO Package_contents SET fk_idPackage=?, fk_idPlan=?;',
+                [fromClient.fk_idPackage, fromClient.fk_idPlan],
+                function(err, result){
+                    if(err){
+                        next(err);
+                        return;
+                    }
+                    console.log(result);
+                    res.send(result);
+                });
+            break;
+	}
+
+
+
 	
 });
 
