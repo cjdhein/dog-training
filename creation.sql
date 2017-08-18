@@ -51,10 +51,10 @@ CREATE TABLE `Session` (
   `date` date NOT NULL,
   `length` decimal(10,0) DEFAULT NULL,
   `fk_idClient` int(11) NOT NULL,
-  `fk_idPlanTaught` int(11) DEFAULT NULL,
+  `fk_idPlan` int(11) DEFAULT NULL,
   PRIMARY KEY (`idSession`),
   KEY `idClient_idx` (`fk_idClient`),
-  KEY `fk_idPlanTaught_idx` (`fk_idPlanTaught`),
+  KEY `fk_idPlan_idx` (`fk_idPlan`),
   CONSTRAINT `fk_idClient` FOREIGN KEY (`fk_idClient`) REFERENCES `Client` (`idClient`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fk_idPlanTaught` FOREIGN KEY (`fk_idPlanTaught`) REFERENCES `Plan` (`idPlan`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_idPlan` FOREIGN KEY (`fk_idPlan`) REFERENCES `Plan` (`idPlan`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;

@@ -161,8 +161,8 @@ app.post('/dog', function(req,res,next) {
     console.log(fromClient);
     switch (fromClient.option) {
 		case 'add':
-            pool.query('INSERT INTO Dog SET name=?, breed=?',
-                [fromClient.name, fromClient.breed],
+            pool.query('INSERT INTO Dog SET name=?, breed=?, fk_idClient = ?',
+                [fromClient.name, fromClient.breed, fromClient.owner],
                 function(err, result){
                     if(err){
                         next(err);
@@ -267,6 +267,16 @@ app.post('/dog', function(req,res,next) {
                     console.log(result);
 			});
 			break;
+		case 'ownedBy':
+            pool.query("SELECT idDog, name, breed FROM Dog WHERE fk_idClient=?;",[fromClient.fk_idClient],
+                function(err,rows,fields) {
+                    if(err) {
+                        next(err);
+                        return;
+                    }
+                    console.log(rows);
+                    res.send(rows);
+                });
 
     }
 });
@@ -460,7 +470,7 @@ app.post('/session', function(req,res,next){
     switch (fromClient.option) {
         case 'add':
 
-            if (fromClient.fk_idPlanTaught == '') {
+            if (fromClient.fk_idPlan == '') {
                 pool.query('INSERT INTO Session SET date=?, length=?, fk_idClient=?;',
                     [dateFormat(fromClient.date, "yyyy-mm-dd"), fromClient.length, fromClient.fk_idClient],
                     function (err, result) {
@@ -473,8 +483,8 @@ app.post('/session', function(req,res,next){
                     });
             }
             else {
-                pool.query('INSERT INTO Session SET date=?, length=?, fk_idClient=?, fk_idPlanTaught=?;',
-                    [dateFormat(fromClient.date, "yyyy-mm-dd"), fromClient.length, fromClient.fk_idClient, fromClient.fk_idPlanTaught],
+                pool.query('INSERT INTO Session SET date=?, length=?, fk_idClient=?, fk_idPlan=?;',
+                    [dateFormat(fromClient.date, "yyyy-mm-dd"), fromClient.length, fromClient.fk_idClient, fromClient.fk_idPlan],
                     function (err, result) {
                         if (err) {
                             next(err);
@@ -498,8 +508,8 @@ app.post('/session', function(req,res,next){
 
                 // if there was a single result
                 if (result.length == 1) {
-                    pool.query('UPDATE Session SET date=?, length=?, fk_idClient=?, fk_idPlanTaught=? FROM Session WHERE idSession=?;',
-                        [dateFormat(fromClient.date, "yyyy-mm-dd"), fromClient.length, fromClient.fk_idClient, fromClient.fk_idPlanTaught, fromClient.idSession],
+                    pool.query('UPDATE Session SET date=?, length=?, fk_idClient=?, fk_idPlan=? WHERE idSession=?;',
+                        [dateFormat(fromClient.date, "yyyy-mm-dd"), fromClient.length, fromClient.fk_idClient, fromClient.fk_idPlan, fromClient.idSession],
                         function (err, result) {
                             if (err) {
                                 next(err);
@@ -538,7 +548,7 @@ app.post('/session', function(req,res,next){
                 });
             break;
         case 'singleRecord':
-            pool.query("SELECT idSession, date, length, fk_idClient, fk_idPlan WHERE idSession = ?;", [fromClient.idSession],
+            pool.query("SELECT idSession, date, length, Session.fk_idClient, Session.fk_idPlan, Session.fk_idDog, Dog.name AS dogName, Plan.name AS planName, CONCAT(firstName, ' ', lastName) As client FROM Session INNER JOIN Client ON fk_idClient = idClient LEFT JOIN Dog ON fk_idDog = idDog LEFT JOIN Plan ON fk_idPlan = idPlan WHERE idSession=?;", [fromClient.idSession],
                 function(err,rows,fields) {
                     if(err) {
                         next(err);
@@ -549,15 +559,42 @@ app.post('/session', function(req,res,next){
                 });
             break;
         case 'dateSearch':
-            pool.query("SELECT idSession, date, CONCAT(firstName, ' ', lastName) AS client, CONCAT(length, ' hours') As duration FROM Session INNER JOIN Client ON fk_idClient = idClient WHERE date ? ?;", [fromClient.type, fromClient.date],
-                function(err,rows,fields) {
-                    if(err) {
-                        next(err);
-                        return;
-                    }
-                    console.log(rows);
-                    res.send(rows);
-                });
+        	switch(fromClient.type){
+				case '<':
+                    pool.query("SELECT idSession, date, CONCAT(firstName, ' ', lastName) AS client, CONCAT(length, ' hours') As duration FROM Session INNER JOIN Client ON fk_idClient = idClient WHERE date <?;", [fromClient.type, fromClient.date],
+                        function(err,rows,fields) {
+                            if(err) {
+                                next(err);
+                                return;
+                            }
+                            console.log(rows);
+                            res.send(rows);
+                        });
+                    break;
+				case '>':
+                    pool.query("SELECT idSession, date, CONCAT(firstName, ' ', lastName) AS client, CONCAT(length, ' hours') As duration FROM Session INNER JOIN Client ON fk_idClient = idClient WHERE date >?;", [fromClient.type, fromClient.date],
+                        function(err,rows,fields) {
+                            if(err) {
+                                next(err);
+                                return;
+                            }
+                            console.log(rows);
+                            res.send(rows);
+                        });
+                    break;
+				case '=':
+                    pool.query("SELECT idSession, date, CONCAT(firstName, ' ', lastName) AS client, CONCAT(length, ' hours') As duration FROM Session INNER JOIN Client ON fk_idClient = idClient WHERE date =?;", [fromClient.type, fromClient.date],
+                        function(err,rows,fields) {
+                            if(err) {
+                                next(err);
+                                return;
+                            }
+                            console.log(rows);
+                            res.send(rows);
+                        });
+                    break;
+			}
+
             break;
     }
 	

@@ -1,4 +1,3 @@
-
 <div class="panel panel-primary">
     <div class="panel-heading">
         <h4  style="text-align:center;" class="panel-title">What would you like to do?</h4>
@@ -30,8 +29,7 @@
                                 <td><button class="buttonCell" id="open-viewSessionbtn">View / Edit Sessions</button>
                             </tr>
                             <tr>
-                                <td><button class="buttonCell" id="open-linkDogOwnerbtn">Set Dog Owners</button>
-                                <td><button class="buttonCell" id="open-linkPlanPackagebtn">Add / Remove Plans from Packages</button>
+                                <td><button class="buttonCell" id="open-editPlanPackagebtn">Add / Remove Plans from Packages</button>
                             </tr>
                         </table>
                     </form>
@@ -44,7 +42,7 @@
                         <div class="panel-body">
                             <form class="mainform" method="post">
                                 <button id="client-view-all-btn"> View All </button>
-                                <h3>OR</h3>
+                                <hr>
                                 <p>Search by Name</p>
                                 <p><label>Name: </label> <input type="text" id="client-search-name"></p>
                                 <button id="client-search-name-btn">Search</button>
@@ -58,7 +56,7 @@
                         <div class="panel-body">
                             <form class="mainform" method="post">
                                 <button id="dog-view-all-btn"> View All </button>
-                                <h3>OR</h3>
+                                <hr>
                                 <p>Search by Name</p>
                                 <p><label>Name: </label> <input type="text" id="dog-search-name"></p>
                                 <button id="dog-search-name-btn">Search</button>
@@ -72,7 +70,7 @@
                         <div class="panel-body">
                             <form class="mainform" method="post">
                                 <button id="plan-view-all-btn"> View All </button>
-                                <h3>OR</h3>
+                                <hr>
                                 <p>Search by Name</p>
                                 <p><label>Name: </label> <input type="text" id="plan-search-name"></p>
                                 <button id="plan-search-name-btn">Search</button>
@@ -86,18 +84,18 @@
                         <div class="panel-body">
                             <form class="mainform" method="post">
                                 <button id="package-view-all-btn"> View All </button>
-                                <h3>OR</h3>
+                                <hr>
                                 <p>Search by Name</p>
                                 <p><label>Name: </label> <input type="text" id="package-search-name"></p>
                                 <button id="package-search-name-btn">Search</button>
-								<hr>
-								<p>
-									<label>View Packages that</label>
-									<p>
-										<button id="empty-packages-btn">Have no Plans</button>
-										<button id="non-empty-packages-btn">Have Plans</button>
-									</p>
-								</p>
+                                <hr>
+                                <p>
+                                    <label>View Packages that</label>
+                                <p>
+                                    <button id="empty-packages=btn">Have no Plans</button>
+                                    <button id="non-empty-packages=btn">Have Plans</button>
+                                </p>
+                                </p>
                             </form>
                         </div>
                     </div>
@@ -108,7 +106,16 @@
                         <div class="panel-body">
                             <form class="mainform" method="post">
                                 <button id="session-view-all-btn"> View All </button>
-
+                                <hr>
+                                <fieldset>
+                                    <h4>By Date</h4>
+                                    <input type="radio" name="dateSearch" value="=" checked="checked"> ON <br>
+                                    <input type="radio" name="dateSearch" value="<"> BEFORE <br>
+                                    <input type="radio" name="dateSearch" value=">"> AFTER <br>
+                                    <input type="date" class="sessionDate">
+                                    <br>
+                                    <button id="session-filter-date-btn">Filter</button>
+                                </fieldset>
                             </form>
 
                         </div>
@@ -332,11 +339,11 @@
                     <input type="hidden" class = "idClient">
                     <label>Owned by:</label><span class="currentOwner"></span>
                     <p>
-                        <hr>
-                        New Owner:
-                        <select class="ownedById">
-
-                        </select>
+                    <hr>
+                    New Owner:
+                    <select class="ownedById">
+                        <option value = ""> </option>
+                    </select>
                     </p>
                 </div>
                 <div>
@@ -438,20 +445,26 @@
 
 <div id="addSessionModal" class="modal fade">
     <div class=" modal-content panel panel-primary">
-        <div class="panel-heading">Add Plan</div>
+        <div class="panel-heading"><h4>Add New Session</h4></div>
         <div class="panel-body">
             <form class="mainform" method="post" id="addNewSession">
-                <h4>Add New Session</h4>
+
                 <div class="inputBlock">
                     <fieldset><legend>Select Client</legend>
                         <label>Select: </label>
                         <select class="sessionClient">
-
+                            <option value = ""> </option>
+                        </select>
+                    </fieldset>
+                    <fieldset><legend>Select Dog</legend>
+                        <label>Select: </label>
+                        <select class="sessionDog">
+                            <option value = ""> </option>
                         </select>
                     </fieldset>
                     <fieldset class="newSess"> <legend>New Session</legend>
                         <p><label>Date: </label><input type="date" class="sessionDate"></p>
-                        <span><label>Length (hours): </label><input type="number" class="sessionLength" step="0.1"></span>
+                        <span><label>Length (hours): </label><input type="number" class="sessionLength" step="0.5"></span>
                         <p>
                             <label>Plan taught: </label>
                             <select class="sessionPlan">
@@ -475,22 +488,39 @@
             <form class="mainform" method="post" id="editSessionForm">
                 <div class="inputBlock">
                     <input type="hidden" id="idSession">
-                    <fieldset><legend>Select Client</legend>
-                        <label>Select: </label>
+                    <fieldset><legend>Client</legend>
+                        <label>Current Client: </label> <span class="currentClient"></span>
+                        <hr>
+                        <label>Select New client: </label>
                         <select class="sessionClient">
+                            <option value = ""> N/A </option>
+
+                        </select>
+                    </fieldset>
+                    <fieldset><legend>Dog</legend>
+                        <label>Current Dog: </label> <span class="currentDog"></span>
+                        <label>Select: </label>
+                        <select class="sessionDog">
+                            <option value = ""> N/A </option>
 
                         </select>
                     </fieldset>
                     <fieldset class="newSess"> <legend>Session Info</legend>
                         <p><label>Date: </label><input type="date" class="sessionDate"></p>
-                        <span><label>Length (hours): </label><input type="number" class="sessionLength" step="0.1"></span>
+                        <span><label>Length (hours): </label><input type="number" class="sessionLength" step="0.5"></span>
                         <p>
-                            <label>Plan taught: </label>
-                            <select class="sessionPlan">
-                                <option value = ""> N/A </option>
-
-                            </select>
+                            <label>Current Plan taught: </label>
+                            <p><span class="currentPlan"></span></p>
+                            <br>
+                            <label>Description: </label>
+                            <p class="currentDescription"></p>
                         </p>
+                        <hr>
+                        <label>New Plan:</label>
+                        <select class="sessionPlan">
+                            <option value = ""> N/A </option>
+
+                        </select>
                     </fieldset>
                 </div>
                 <span><button class="btn btn-default" id="deleteSessionbtn"> Delete Session</button></span>
@@ -501,57 +531,33 @@
     </div>
 </div>
 
-<div id="linkDogOwnerModal" class="modal fade">
+<div id="editPlanPackageModal" class="modal fade">
     <div class=" modal-content panel panel-primary">
-        <div class="panel-heading">Set Dog's Owner</div>
+        <div class="panel-heading">Add / Remove Plan from Packages</div>
         <div class="panel-body">
-            <form class="mainform" method="post" id="linkDogOwner">
+            <form class="mainform" method="post" id="editPlanPackage">
                 <div class="inputBlock">
-                    <fieldset><legend>Select Client</legend>
-                        <label>Select: </label>
-                        <select class="linkClient">
-
-                        </select>
-                    </fieldset>
-                    <fieldset><legend>Select Dog</legend>
-                        <label>Dog: </label>
-                        <select class="linkDog">
-
-                        </select>
-                    </fieldset>
-                </div>
-                <span><button class="btn btn-default" id="addLinkDogOwner"> Link </button></span>
-                <span><button class="btn btn-default" id="close-linkDogOwnerbtn"> Close </button></span>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div id="linkPlanPackageModal" class="modal fade">
-    <div class=" modal-content panel panel-primary">
-        <div class="panel-heading">Add Plan to a Package</div>
-        <div class="panel-body">
-            <form class="mainform" method="post" id="linkPlanPackage">
-                <div class="inputBlock">
-                    <fieldset><legend>Select Package you want to add or remove a plan to / from:</legend>
+                    <fieldset><legend>Select parent Package:</legend>
                         <label>Package: </label>
                         <select class="linkPackage">
 
                         </select>
                     </fieldset>
-                    <fieldset><legend>Select the Plan to add/remove:</legend>
+                    <fieldset><legend>Select the Plan to add or remove:</legend>
                         <label>Plan: </label>
                         <select class="linkPlan">
 
                         </select>
                     </fieldset>
                 </div>
-                <span><button class="btn btn-default" id="addLinkPlanPackage"> Link </button></span>
-                <span><button class="btn btn-default" id="close-linkPlanPackagebtn"> Close </button></span>
+                <span><button class="btn btn-default" id="addPlanPackage"> Add </button></span>
+                <span><button class="btn btn-default" id="removePlanPackage"> Remove </button></span>
+                <span><button class="btn btn-default" id="close-PlanPackagebtn"> Close </button></span>
             </form>
         </div>
     </div>
 </div>
+
 
 <div id="searchResultDiv" class="panel panel-default panel-heading hideable">
     <h3>Search Results</h3>
@@ -573,6 +579,7 @@
         <div class="alert alert-error"> <span>Error: </span>Something went wrong!</div>
     </div>
 </div>
-
-
+<script src="scripts/modernizr.js"></script>
 <script src="scripts/script.js"></script>
+
+

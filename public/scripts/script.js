@@ -16,8 +16,14 @@ function hideAll(){
 	
 }
 
+
+
 function setup(){
-    $("#tablepanel").append(makeTable());
+    if(!Modernizr.inputtypes.date){
+    	$('input[type=date]').datepicker({dateFormat: 'yy-mm-dd'});
+	}
+
+	$("#tablepanel").append(makeTable());
 
 	setupClient();
 	setupDog();
@@ -141,6 +147,10 @@ function setupClient(){
         $("#searchResultDiv").show();
         var table = document.getElementById("searchResultTable");
         $("#searchResultTable tr").remove();
+
+        //var headerRow = $("<tr> <th>Name</th> <th>Address</th> <th>Phone</th> <th>Email</th></tr>");
+        //table.appendChild(headerRow);
+
         for(var i = 0; i < data.length; i++) {
             var resultRow = document.createElement("tr");
             var resultNameCell = document.createElement("td");
@@ -311,6 +321,7 @@ function setupDog(){
 /***************** Open/Close ***************/
 
 	$("#open-addDogbtn").click(function(event){
+        $("#addDogModal .dogOwners option").remove();
 		getClientsForSelection($("#addDogModal").find(".dogOwners"));
 		$("#addDogModal").show();
 		event.preventDefault(); 
@@ -402,17 +413,23 @@ function setupDog(){
 		$("#searchResultDiv").show();
 		var table = document.getElementById("searchResultTable");
         $("#searchResultTable tr").remove();
+
+        //var headerRow = $("<tr> <th>Name</th> <th>Breed</th> <th>Owner</th> </tr>");
+        //table.appendChild(headerRow);
+
 		for(var i = 0; i < data.length; i++) {
 			var resultRow = document.createElement("tr");
 			var resultNameCell = document.createElement("td");
 			var resultBreedCell = document.createElement("td");
 			var resultLink = document.createElement("button");
 			var hiddenId = document.createElement("input");
+			var resultOwnerCell = document.createElement("td");
 
             resultNameCell.textContent = data[i].name;
             resultBreedCell.textContent = data[i].breed;
 			resultLink.id = "result" + (i+1);
 			resultLink.textContent = "View/Edit";
+            resultOwnerCell.textContent = data[i].Owner;
 
             hiddenId.type = "hidden";
             hiddenId.name = "rowId";
@@ -430,6 +447,7 @@ function setupDog(){
 
             resultRow.appendChild(resultNameCell);
             resultRow.appendChild(resultBreedCell);
+            resultRow.appendChild(resultOwnerCell);
             resultRow.appendChild(resultLink);
             resultRow.appendChild(hiddenId);
 
@@ -445,7 +463,7 @@ function runEditDog(id) {
 		option : 'singleRecord',
 		idDog : id
 	}
-
+    $("#editDogModal .ownedById option").remove();
 	getClientsForSelection($("#editDogModal").find(".ownedById"));
 
 	$.post("http://flip2.engr.oregonstate.edu:24561/dog", payload, function(data){
@@ -619,6 +637,10 @@ function setupPlan(){
         $("#searchResultDiv").show();
         var table = document.getElementById("searchResultTable");
         $("#searchResultTable tr").remove();
+
+        //var headerRow = $("<tr> <th>Name</th> <th>Description</th> </tr>");
+        //table.appendChild(headerRow);
+
         for(var i = 0; i < data.length; i++) {
             var resultRow = document.createElement("tr");
             var resultNameCell = document.createElement("td");
@@ -761,6 +783,19 @@ function setupPackage(){
 		event.stopImmediatePropagation();
     });
 
+    $("#open-editPlanPackagebtn").click(function(event){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        $("#editPlanPackageModal").show();
+        runEditPlanPackage();
+    });
+
+    $("#close-PlanPackagebtn").click(function(event){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        $("#editPlanPackageModal").hide();
+    });
+
 	/*submit buttons for add, edit, view*/
     $("#package-view-all-btn").click(function(event){
 
@@ -825,6 +860,10 @@ function setupPackage(){
         $("#searchResultDiv").show();
         var table = document.getElementById("searchResultTable");
         $("#searchResultTable tr").remove();
+
+        //var headerRow = $("<tr> <th>Name</th> <th>Cost</th> <th>Sessions Included</th> </tr>");
+        //table.appendChild(headerRow);
+
         for(var i = 0; i < data.length; i++) {
             var resultRow = document.createElement("tr");
             var resultNameCell = document.createElement("td");
@@ -881,16 +920,13 @@ function getIncludedPlans(id) {
         for(var i = 0; i < data.length; i++){
             var resultRow = document.createElement("tr");
             var resultName = document.createElement("td");
-            var resultRemove = document.createElement("button");
             var hiddenId = document.createElement("input");
 
             resultName.textContent = data[i].plName;
-            resultRemove.textContent = "X";
             hiddenId.type = "hidden";
             hiddenId.value = data[0].fk_idPlan;
 
             resultRow.appendChild(resultName);
-            resultRow.appendChild(resultRemove);
             resultRow.appendChild(hiddenId);
             table.appendChild(resultRow);
         }
@@ -957,6 +993,55 @@ function runEditPackage(id) {
     });
 }
 
+function runEditPlanPackage(){
+    getPlansForSelection($("#editPlanPackage .linkPlan"));
+    getPackagesForSelection($("#editPlanPackage .linkPackage"));
+
+    $("#addPlanPackage").click(function(event){
+        var planData = $("#editPlanPackage .linkPlan").val();
+        var packageData = $("#editPlanPackage .linkPackage").val();
+
+        var payload = {
+        	option : 'add',
+            fk_idPlan : planData,
+            fk_idPackage : packageData
+        }
+
+        $.post("http://flip2.engr.oregonstate.edu:24561/package-contents", payload, function(result){
+
+        	console.log(result);
+
+
+        });
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+    });
+
+    $("#removePlanPackage").click(function(event){
+        var planData = $("#editPlanPackage .linkPlan").val();
+        var packageData = $("#editPlanPackage .linkPackage").val();
+
+        var payload = {
+            option : 'delete',
+            fk_idPlan : planData,
+            fk_idPackage : packageData
+        }
+
+        $.post("http://flip2.engr.oregonstate.edu:24561/package-contents", payload, function(result){
+
+            console.log(result);
+
+
+        });
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+    });
+
+}
+
+
 function resetEditPackageForm() {
     $("#editPackageModal").find(".PackageName").val("");
     $("#editPackageModal").find(".PackageBreed").val("");
@@ -984,8 +1069,30 @@ function setupSession(){
     $("#open-addSessionbtn").on('click', function(event){
         event.preventDefault(); 
 		event.stopImmediatePropagation();
-        //$("#addNewSession .sessionDate").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#addSessionModal .sessionPlan option").remove();
+        getPlansForSelection($("#addSessionModal").find(".sessionPlan"));
+        $("#addSessionModal .sessionClient option").remove();
     	getClientsForSelection($("#addSessionModal").find(".sessionClient"));
+    	$(".sessionClient").change(function(event){
+
+            $("#addNewSession .sessionDog option").remove();
+
+    		var payload = {
+    			option : 'ownedBy',
+				fk_idClient :  $("#addNewSession").find(".sessionClient").val()
+			}
+			
+			$.post("http://flip2.engr.oregonstate.edu:24561/dog", payload, function(data){
+				console.log("posted");
+				for(var i = 0; i < data.length; i++) {
+                    var opt = document.createElement("option");
+                    opt.value = data[i].idDog;
+                    opt.textContent = data[i].name;
+                    $("#addNewSession .sessionDog").append(opt);
+				}
+
+			});
+		});
         $("#addSessionModal").show();
 
     });
@@ -1001,7 +1108,7 @@ function setupSession(){
     $("#open-viewSessionbtn").click(function(event){
         hideAll();
         $("#viewManageSession").show();
-		//$("#viewManageSession").find(".sessionDate").datepicker({dateFormat: 'yy-mm-dd'});
+
         event.preventDefault(); 
 		event.stopImmediatePropagation();
 
@@ -1022,7 +1129,7 @@ function setupSession(){
             option : 'viewAll'
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/Session", payload, function(data){
+        $.post("http://flip2.engr.oregonstate.edu:24561/session", payload, function(data){
             console.log("posted");
             populateSessions(data);
         });
@@ -1041,7 +1148,7 @@ function setupSession(){
             searchData : nameSearchData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/Session", payload, function(data){
+        $.post("http://flip2.engr.oregonstate.edu:24561/session", payload, function(data){
             console.log("posted");
             populateSessions(data);
         });
@@ -1062,7 +1169,7 @@ function setupSession(){
 			type : typeData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/Session", payload, function(data){
+        $.post("http://flip2.engr.oregonstate.edu:24561/session", payload, function(data){
             console.log("posted");
             populateSessions(data);
         });
@@ -1088,7 +1195,7 @@ function setupSession(){
 
         console.log(SessionPayload);
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/Session", SessionPayload, function(data){
+        $.post("http://flip2.engr.oregonstate.edu:24561/session", SessionPayload, function(data){
             console.log("posted");
             //loadClients();
         });
@@ -1103,6 +1210,10 @@ function setupSession(){
         $("#searchResultDiv").show();
         var table = document.getElementById("searchResultTable");
         $("#searchResultTable tr").remove();
+
+        //var headerRow = $("<tr> <th>Client</th> <th>Date</th> <th>Length</th> </tr>");
+        //table.appendChild(headerRow);
+
         for(var i = 0; i < data.length; i++) {
             var resultRow = document.createElement("tr");
             var resultClientCell = document.createElement("td");
@@ -1149,34 +1260,63 @@ function runEditSession(id) {
         option : 'singleRecord',
         idSession : id
     }
-    getClientsForSelection($("#editSessionModal").find(".ownedById"));
-    $.post("http://flip2.engr.oregonstate.edu:24561/Session", payload, function(data){
-        console.log("posted");
 
-        $("#editSessionModal").find(".idClient").val(data[0].idClient);
-        $("#editSessionModal").find(".SessionName").val(data[0].name);
-        $("#editSessionModal").find(".SessionBreed").val(data[0].breed);
-        $("#editSessionModal").find(".idSession").val(data[0].idSession);
-        $("#editSessionModal").find(".currentOwner").text($("#editSessionModal").find(".ownedById").find("option[value=" + data[0].idClient + "]")[0].textContent);
-        $("#editSessionModal").find(".ownedById").find("option[value=" + ownerId +"]").attr('selected','selected');
-
-
-    });
-
-    $("#editSessionbtn").click(function(event){
-        var nameData = $("#editSessionModal").find(".SessionName").val();
-        var breedData = $("#editSessionModal").find(".SessionBreed").val();
-        var ownerData = $("#editSessionModal").find(".ownedById").val();
-        var idSessionData = $("#editSessionModal").find(".idSession").val();
-        payload = {
-            option : 'edit',
-            name : nameData,
-            breed : breedData,
-            idClient : ownerData,
-            idSession : idSessionData
+    $(".sessionClient").change(function(event){
+        var payload = {
+            option : 'ownedBy',
+            fk_idClient :  $("#editSessionForm").find(".sessionClient").val()
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/Session", payload, function(data){
+        $.post("http://flip2.engr.oregonstate.edu:24561/dog", payload, function(data){
+            console.log("posted");
+            for(var i = 0; i < data.length; i++) {
+                var opt = document.createElement("option");
+                opt.value = data[i].idDog;
+                opt.textContent = data[i].name;
+                $("#addNewSession").find(".sessionDog").append(opt);
+            }
+
+        });
+    });
+    $("#editSessionModal .sessionPlan option").remove();
+    $("#editSessionModal .sessionClient option").remove();
+    getClientsForSelection($("#editSessionModal").find(".sessionClient"));
+	getPlansForSelection($("#editSessionModal").find(".sessionPlan"));
+    $.post("http://flip2.engr.oregonstate.edu:24561/session", payload, function(data){
+        console.log("posted");
+
+        var planPayload = {
+        	option : 'singleRecord',
+			idPlan : data[0].fk_idPlan
+		}
+        $.post("http://flip2.engr.oregonstate.edu:24561/plan", planPayload, function(data){
+        	console.log("posted");
+            $("#editSessionModal").find(".currentPlan").text(data[0].name);
+            $("#editSessionModal").find(".currentDescription").text(data[0].description);
+		});
+        $("#editSessionModal").find(".idSession").val(data[0].idSession);
+        $("#editSessionModal").find(".sessionDate").val(data[0].date);
+        $("#editSessionModal").find(".sessionLength").val(data[0].length);
+        $("#editSessionModal").find(".currentDog").val(data[0].dogName);
+        $("#editSessionModal").find(".currentClient").text(data[0].client);
+	});
+
+    $("#editSessionbtn").click(function(event){
+        var clientData = $("#editSessionModal").find(".sessionClient").val();
+        var dateData = $("#editSessionModal").find(".sessionDate").val();
+        var lengthData = $("#editSessionModal").find(".sessionLength").val();
+        var idSessionData = $("#editSessionModal").find(".idSession").val();
+        var idPlanData = $("#editSessionModal").find(".sessionPlan").val();
+        payload = {
+            option : 'edit',
+			idSession : idSessionData,
+            fk_idClient : clientData,
+            date : dateData,
+            length : lengthData,
+            fk_idPlan: idPlanData
+        }
+
+        $.post("http://flip2.engr.oregonstate.edu:24561/session", payload, function(data){
             console.log("posted");
             //loadClients();
         });
@@ -1194,7 +1334,7 @@ function runEditSession(id) {
             idSession : idSessionData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/Session", payload, function(data){
+        $.post("http://flip2.engr.oregonstate.edu:24561/session", payload, function(data){
             console.log("posted");
             //loadClients();
         });
@@ -1213,28 +1353,48 @@ function resetEditSessionForm() {
     $("#editSessionModal").find(".ownedById").find("option").remove();
     $("#editSessionModal").find(".currentOwner").text("");
     $("#editSessionModal").find(".idClient").val("");
+    $("#editSessionModal").find(".sessionDog").val("");
 }
 function resetAddSessionForm(){
 	$("#addSessionModal").find(".sessionDate").val("");
 	$("#addSessionModal").find(".sessionLength").val("");
 	$("#addSessionModal").find(".sessionClient").val("");
 	$("#addSessionModal").find(".sessionPlan").val("");
+    $("#addSessionModal").find(".sessionDog").val("");
 
 }
 
+function getPackagesForSelection(idToApplyTo){
+	var payload = {
+		option : 'viewAll',
+	}
 
+	$.post("http://flip2.engr.oregonstate.edu:24561/package", payload, function(data){
+		console.log(data);
+		for(var i = 0; i < data.length; i++) {
+            var opt = document.createElement("option");
+            opt.value = data[i].idPackage;
+            opt.textContent = data[i].name;
+            idToApplyTo.append(opt);
+		}
+	});
+}
 
+function getPlansForSelection(idToApplyTo){
+    var payload = {
+        option : 'viewAll',
+    }
 
-
-
-
-
-
-
-
-
-
-
+    $.post("http://flip2.engr.oregonstate.edu:24561/plan", payload, function(data){
+        console.log(data);
+        for(var i = 0; i < data.length; i++) {
+            var opt = document.createElement("option");
+            opt.value = data[i].idPlan;
+            opt.textContent = data[i].name;
+            idToApplyTo.append(opt);
+        }
+    });
+}
 
 
 function getClientsForSelection(idToApplyTo){
@@ -1259,74 +1419,9 @@ function getClientsForSelection(idToApplyTo){
 
 
 
-function loadClients(){
-
-    $.get("http://flip2.engr.oregonstate.edu:24561/get-clients", function(data){
-        console.log(data);
-        var table = $("#thetable");
-        $("#thetable tr").remove();
-        var headerRow = document.createElement("tr");
-        for(var i = 0; i < 4; i++){
-            var headCell = document.createElement("th");
-            headCell.className = "headCell";
-            headCell.id = ("head" + (i+1));
-            headerRow.appendChild(headCell);
-
-        }
-        table.append(headerRow);
-        labelColumns();
-        for(var i = 0; i < data.length-1; i++) {
-
-            document.getElementById("thetable").appendChild(clientRow(data[i]));
-        }
-    });
-}
-
-function clientRow(payload){
-	var newRow = document.createElement("tr");
-	for(var i = 0; i < 5; i++){
-		var subCell = document.createElement("td");
-		subCell.id = "cell" + i;
-		var hiddenId = document.createElement("input");
-		hiddenId.type = "hidden";
-		hiddenId.name = "rowId";
-		hiddenId.value = payload.id;
-			
-		buttonForm.appendChild(hiddenId);
-		subCell.appendChild(buttonForm);
-		subCell.className = "buttonCell"
-
-		newRow.appendChild(subCell);
-	}
-	var newCells = newRow.childNodes;
-	newCells[0].textContent = payload.Name;
-	newCells[1].textContent = payload.Address;
-	newCells[2].textContent = payload.phone;
-	newCells[3].textContent = payload.email;
-
-	
-	resetClientForm();
-	return newRow;
-}
-
-function labelColumns(type){
-
-	switch(type){
-		case 1: //clients
-            document.getElementById("head1").textContent = "Name";
-            document.getElementById("head1").className = "nameCell";
-            document.getElementById("head2").textContent = "Address";
-            document.getElementById("head2").className = "addressCell";
-            document.getElementById("head3").textContent = "Phone";
-            document.getElementById("head3").className = "phoneCell";
-            document.getElementById("head4").textContent = "Email";
-            document.getElementById("head4").className = "emailCell";
-            break;
-		case 2: //dogs
-	}
 
 
-}
+
 
 function makeTable(){
 
