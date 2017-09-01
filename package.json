@@ -1,14 +1,11 @@
 {
-  "name": "hello-world",
+  "name": "skdt-db",
   "version": "1.0.0",
-  "description": "Hello world with express and node.js",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "OSU",
+  "description": "Server for SKDT database",
+  "author": "Cody Dhein",
   "license": "ISC",
   "dependencies": {
+	"aws-sdk" : "latest",
     "body-parser": "^1.16.1",
     "dateformat": "^2.0.0",
     "express": "^4.14.1",
@@ -17,5 +14,8 @@
     "forever": "^0.15.3",
     "mysql": "^2.13.0",
     "request": "^2.81.0"
-  }
+  },
+  "scripts": {
+    "start" :"node main.js"
+  }  
 }

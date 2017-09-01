@@ -5,6 +5,7 @@
 
 $(document).ready(setup());
 
+// Hide all additional panels that display on the page
 function hideAll(){
 	$("#viewManageClient").hide();
 	$("#viewManageDog").hide();
@@ -17,8 +18,10 @@ function hideAll(){
 }
 
 
-
+/* called at the start to initialize page elements */
 function setup(){
+	
+	// use patepicker if datepicker is not already part of browser
     if(!Modernizr.inputtypes.date){
     	$('input[type=date]').datepicker({dateFormat: 'yy-mm-dd'});
 	}
@@ -40,7 +43,7 @@ function setupClient(){
 
 		
 
-/***************** Open/Close ***************/
+/**********************	Open/Close ******************************/
 
 	$("#open-addClientbtn").click(function(event){
 		$("#addClientModal").show();
@@ -69,16 +72,16 @@ function setupClient(){
         event.preventDefault(); 
 		event.stopImmediatePropagation();
     });
+/***************************************************************/	
 	
-	
-	/*submit buttons for add, edit, view*/
+	/*	add new client 	*/
 	$("#addClientbtn").click(function(event){
+		
 		var fNameData = $("#addClientModal").find(".fName").val();
 		var lNameData = $("#addClientModal").find(".lName").val();
 		var phoneData = $("#addClientModal").find(".phone").val();
 		var emailData = $("#addClientModal").find(".email").val();
-		var houseNumData = $("#addClientModal").find(".houseNum").val();
-		var streetData = $("#addClientModal").find(".street").val();
+		var addressData = $("#addClientModal").find(".address").val();
 		var cityData = $("#addClientModal").find(".city").val();
 		var stateData = $("#addClientModal").find(".state").val();
 		var zipData = $("#addClientModal").find(".zip").val();
@@ -89,8 +92,7 @@ function setupClient(){
 			lName : lNameData,
 			phone : phoneData,
 			email : emailData,
-			houseNum : houseNumData,
-			street : streetData,
+			address : addressData,
 			city : cityData,
 			state : stateData,
 			zip : zipData
@@ -98,7 +100,7 @@ function setupClient(){
 		
 		console.log(payload);
 
-		$.post("http://flip2.engr.oregonstate.edu:24561/client", payload, function(data){
+		$.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/client", payload, function(data){
 			console.log("posted");
 			//loadClients();
 		});
@@ -108,14 +110,14 @@ function setupClient(){
 		event.stopImmediatePropagation();
 	});
 
-	/*submit buttons for add, edit, view*/
+	/* get all clients and display in table */
     $("#client-view-all-btn").click(function(event){
 
         var payload = {
             option : 'viewAll'
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/client", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/client", payload, function(data){
             console.log("posted");
             populateClients(data);
         });
@@ -124,7 +126,8 @@ function setupClient(){
 		event.stopImmediatePropagation();
 
     });
-
+	
+	/* search for clients by name and display */
     $("#client-search-name-btn").click(function(event){
 
         var nameSearchData = $("#client-search-name").val();
@@ -134,7 +137,7 @@ function setupClient(){
             searchData : nameSearchData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/client", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/client", payload, function(data){
             console.log("posted");
             populateClients(data);
         });
@@ -143,13 +146,11 @@ function setupClient(){
 		event.stopImmediatePropagation();
     });
 
+	/* takes the results from query and generates and displays a table */
     function populateClients(data){
         $("#searchResultDiv").show();
         var table = document.getElementById("searchResultTable");
         $("#searchResultTable tr").remove();
-
-        //var headerRow = $("<tr> <th>Name</th> <th>Address</th> <th>Phone</th> <th>Email</th></tr>");
-        //table.appendChild(headerRow);
 
         for(var i = 0; i < data.length; i++) {
             var resultRow = document.createElement("tr");
@@ -203,6 +204,7 @@ function setupClient(){
 
 }
 
+/* Display modal for editing a client and handle sending of post request to edit */
 function runEditClient(id) {
 
     var payload = {
@@ -210,15 +212,14 @@ function runEditClient(id) {
         idClient : id
     }
 
-    $.post("http://flip2.engr.oregonstate.edu:24561/client", payload, function(data){
+    $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/client", payload, function(data){
         console.log("posted");
 
         $("#editClientModal").find(".fName").val(data[0].firstName);
         $("#editClientModal").find(".lName").val(data[0].lastName);
         $("#editClientModal").find(".phone").val(data[0].phone);
         $("#editClientModal").find(".email").val(data[0].email);
-        $("#editClientModal").find(".houseNum").val(data[0].houseNum);
-        $("#editClientModal").find(".street").val(data[0].street);
+        $("#editClientModal").find(".address").val(data[0].address);
         $("#editClientModal").find(".city").val(data[0].city);
         $("#editClientModal").find(".state").val(data[0].state);
         $("#editClientModal").find(".zip").val(data[0].zip);
@@ -233,8 +234,7 @@ function runEditClient(id) {
         var lNameData = $("#editClientModal").find(".lName").val();
         var phoneData = $("#editClientModal").find(".phone").val();
         var emailData = $("#editClientModal").find(".email").val();
-        var houseNumData = $("#editClientModal").find(".houseNum").val();
-        var streetData = $("#editClientModal").find(".street").val();
+        var addressData = $("#editClientModal").find(".address").val();
         var cityData = $("#editClientModal").find(".city").val();
         var stateData = $("#editClientModal").find(".state").val();
         var zipData = $("#editClientModal").find(".zip").val();
@@ -246,14 +246,13 @@ function runEditClient(id) {
             lName : lNameData,
             phone : phoneData,
             email : emailData,
-            houseNum : houseNumData,
-            street : streetData,
+            address : addressData,
             city : cityData,
             state : stateData,
             zip : zipData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/client", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/client", payload, function(data){
             console.log("posted");
             //loadClients();
         });
@@ -271,7 +270,7 @@ function runEditClient(id) {
             idClient : idClientData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/client", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/client", payload, function(data){
             console.log("posted");
             //loadClients();
         });
@@ -290,8 +289,7 @@ function resetEditClientForm(){
     $("#editClientModal").find(".lName").val("");
     $("#editClientModal").find(".phone").val("");
     $("#editClientModal").find(".email").val("");
-    $("#editClientModal").find(".houseNum").val("");
-    $("#editClientModal").find(".street").val("");
+    $("#editClientModal").find(".address").val("");
     $("#editClientModal").find(".city").val("");
     $("#editClientModal").find(".state").val("");
     $("#editClientModal").find(".zip").val("");
@@ -303,8 +301,7 @@ function resetAddClientForm(){
     $("#addClientModal").find(".lName").val("");
     $("#addClientModal").find(".phone").val("");
     $("#addClientModal").find(".email").val("");
-    $("#addClientModal").find(".houseNum").val("");
-    $("#addClientModal").find(".street").val("");
+    $("#addClientModal").find(".address").val("");
     $("#addClientModal").find(".city").val("");
     $("#addClientModal").find(".state").val("");
     $("#addClientModal").find(".zip").val("");
@@ -318,7 +315,7 @@ function setupDog(){
 
 	
 
-/***************** Open/Close ***************/
+/**********************	Open/Close ******************************/
 
 	$("#open-addDogbtn").click(function(event){
         $("#addDogModal .dogOwners option").remove();
@@ -356,7 +353,7 @@ function setupDog(){
 			option : 'viewAll'
 		}
 		
-        $.post("http://flip2.engr.oregonstate.edu:24561/dog", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/dog", payload, function(data){
             console.log("posted");
             populateDogs(data);
         });
@@ -375,7 +372,7 @@ function setupDog(){
 			searchData : nameSearchData
 		}
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/dog", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/dog", payload, function(data){
             console.log("posted");
             populateDogs(data);
         });
@@ -398,7 +395,7 @@ function setupDog(){
 		
 		console.log(dogPayload);
 
-		$.post("http://flip2.engr.oregonstate.edu:24561/dog", dogPayload, function(data){
+		$.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/dog", dogPayload, function(data){
 			console.log("posted");
 			//loadClients();
 		});
@@ -409,7 +406,8 @@ function setupDog(){
 	
 
 	
-	function populateDogs(data){
+	/* takes the results from query and generates and displays a table */ 
+ 	 function populateDogs(data){
 		$("#searchResultDiv").show();
 		var table = document.getElementById("searchResultTable");
         $("#searchResultTable tr").remove();
@@ -457,6 +455,7 @@ function setupDog(){
 	
 }
 
+/* Display modal for editing a dog and handle sending of post request to edit */ 
 function runEditDog(id) {
 	
 	var payload = {
@@ -466,15 +465,21 @@ function runEditDog(id) {
     $("#editDogModal .ownedById option").remove();
 	getClientsForSelection($("#editDogModal").find(".ownedById"));
 
-	$.post("http://flip2.engr.oregonstate.edu:24561/dog", payload, function(data){
+	$.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/dog", payload, function(data){
 		console.log("posted");
 
         $("#editDogModal").find(".idClient").val(data[0].idClient);
 		$("#editDogModal").find(".dogName").val(data[0].name);
 		$("#editDogModal").find(".dogBreed").val(data[0].breed);
 		$("#editDogModal").find(".idDog").val(data[0].idDog);
-        $("#editDogModal").find(".currentOwner").text($("#editDogModal").find(".ownedById").find("option[value=" + data[0].idClient + "]")[0].textContent);
-        $("#editDogModal").find(".ownedById").find("option[value=" + ownerId +"]").attr('selected','selected');
+		
+		
+		
+		$.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/client",{option : 'singleRecord', idClient : data[0].idClient}, function(data){
+			$("#editDogModal").find(".currentOwner").text(data[0].firstName + ' ' + data[0].lastName);
+		});
+		     
+        $("#editDogModal").find(".ownedById").find("option[value=" + data[0].idClient +"]").attr('selected','selected');
 
 
 	});
@@ -493,7 +498,7 @@ function runEditDog(id) {
 			idDog : idDogData
 		}
 		
-		$.post("http://flip2.engr.oregonstate.edu:24561/dog", payload, function(data){
+		$.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/dog", payload, function(data){
 			console.log("posted");
 			//loadClients();
 		});
@@ -511,7 +516,7 @@ function runEditDog(id) {
             idDog : idDogData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/dog", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/dog", payload, function(data){
             console.log("posted");
             //loadClients();
         });
@@ -546,7 +551,7 @@ function setupPlan(){
 
 
 
-    /***************** Open/Close ***************/
+    /**********************	Open/Close ******************************/
 
     $("#open-addPlanbtn").click(function(event){
         $("#addPlanModal").show();
@@ -582,7 +587,7 @@ function setupPlan(){
             option : 'viewAll'
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/Plan", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/Plan", payload, function(data){
             console.log("posted");
             populatePlans(data);
         });
@@ -601,7 +606,7 @@ function setupPlan(){
             searchData : nameSearchData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/Plan", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/Plan", payload, function(data){
             console.log("posted");
             populatePlans(data);
         });
@@ -622,7 +627,7 @@ function setupPlan(){
 
         console.log(planPayload);
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/Plan", planPayload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/Plan", planPayload, function(data){
             console.log("posted");
             //loadClients();
         });
@@ -633,7 +638,8 @@ function setupPlan(){
 
 
 
-    function populatePlans(data){
+    /* takes the results from query and generates and displays a table */ 
+ 	 function populatePlans(data){
         $("#searchResultDiv").show();
         var table = document.getElementById("searchResultTable");
         $("#searchResultTable tr").remove();
@@ -676,6 +682,7 @@ function setupPlan(){
 
 }
 
+/* Display modal for editing a plan and handle sending of post request to edit */ 
 function runEditPlan(id) {
 
     var payload = {
@@ -683,7 +690,7 @@ function runEditPlan(id) {
         idPlan : id
     }
 
-    $.post("http://flip2.engr.oregonstate.edu:24561/Plan", payload, function(data){
+    $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/Plan", payload, function(data){
         console.log("posted");
 
         $("#editPlanModal").find(".idPlan").val(data[0].idPlan);
@@ -703,7 +710,7 @@ function runEditPlan(id) {
             idPlan : idPlanData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/Plan", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/Plan", payload, function(data){
             console.log("posted");
             //loadClients();
         });
@@ -721,7 +728,7 @@ function runEditPlan(id) {
             idPlan : idPlanData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/Plan", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/Plan", payload, function(data){
             console.log("posted");
             //loadClients();
         });
@@ -754,7 +761,7 @@ function setupPackage(){
 
 
 
-    /***************** Open/Close ***************/
+    /**********************	Open/Close ******************************/
 
     $("#open-addPackagebtn").click(function(event){
         $("#addPackageModal").show();
@@ -783,17 +790,30 @@ function setupPackage(){
 		event.stopImmediatePropagation();
     });
 
-    $("#open-editPlanPackagebtn").click(function(event){
+    $("#open-addPlanPackagebtn").click(function(event){
         event.preventDefault();
         event.stopImmediatePropagation();
-        $("#editPlanPackageModal").show();
-        runEditPlanPackage();
+        $("#addPlanPackageModal").show();
+        runAddPlanPackage();
     });
 
-    $("#close-PlanPackagebtn").click(function(event){
+    $("#open-removePlanPackagebtn").click(function(event){
         event.preventDefault();
         event.stopImmediatePropagation();
-        $("#editPlanPackageModal").hide();
+        $("#removePlanPackageModal").show();
+        runRemovePlanPackage();
+    });
+
+    $("#close-addPlanPackagebtn").click(function(event){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        $("#addPlanPackageModal").hide();
+    });
+
+    $("#close-removePlanPackagebtn").click(function(event){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        $("#removePlanPackageModal").hide();
     });
 
 	/*submit buttons for add, edit, view*/
@@ -803,7 +823,7 @@ function setupPackage(){
             option : 'viewAll'
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/Package", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/Package", payload, function(data){
             console.log("posted");
             populatePackages(data);
         });
@@ -822,13 +842,43 @@ function setupPackage(){
             searchData : nameSearchData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/Package", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/Package", payload, function(data){
             console.log("posted");
             populatePackages(data);
         });
 
         event.preventDefault(); 
 		event.stopImmediatePropagation();
+    });
+
+    $("#empty-packages-btn").click(function(event){
+
+        var payload = {
+            option : 'empty',
+        }
+
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/Package", payload, function(data){
+            console.log("posted");
+            populatePackages(data);
+        });
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+    });
+
+    $("#non-empty-packages-btn").click(function(event){
+
+        var payload = {
+            option : 'non-empty',
+        }
+
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/Package", payload, function(data){
+            console.log("posted");
+            populatePackages(data);
+        });
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
     });
 
     $("#addPackagebtn").click(function(event){
@@ -845,7 +895,7 @@ function setupPackage(){
 
         console.log(PackagePayload);
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/Package", PackagePayload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/Package", PackagePayload, function(data){
             console.log("posted");
             //loadClients();
         });
@@ -856,7 +906,8 @@ function setupPackage(){
 
 
 
-    function populatePackages(data){
+    /* takes the results from query and generates and displays a table */ 
+ 	 function populatePackages(data){
         $("#searchResultDiv").show();
         var table = document.getElementById("searchResultTable");
         $("#searchResultTable tr").remove();
@@ -912,11 +963,11 @@ function getIncludedPlans(id) {
         idPackage: id
     }
 
-    $.post("http://flip2.engr.oregonstate.edu:24561/package-contents", payload, function(data){
+    $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/package-contents", payload, function(data){
         console.log('posted');
 
         var table = $("#editPackageForm").find(".includedPlans")[0];
-
+        $("#editPackageForm tr").remove();
         for(var i = 0; i < data.length; i++){
             var resultRow = document.createElement("tr");
             var resultName = document.createElement("td");
@@ -933,6 +984,7 @@ function getIncludedPlans(id) {
     });
 }
 
+/* Display modal for editing a package and handle sending of post request to edit */ 
 function runEditPackage(id) {
 
     var payload = {
@@ -940,7 +992,7 @@ function runEditPackage(id) {
         idPackage : id
     }
 
-    $.post("http://flip2.engr.oregonstate.edu:24561/package", payload, function(data){
+    $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/package", payload, function(data){
         console.log("posted");
 
         $("#editPackageModal").find(".packageName").val(data[0].name);
@@ -963,7 +1015,7 @@ function runEditPackage(id) {
             numIncludedSessions : sessionData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/package", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/package", payload, function(data){
             console.log("posted");
             //loadClients();
         });
@@ -981,7 +1033,7 @@ function runEditPackage(id) {
             idPackage : idPackageData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/package", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/package", payload, function(data){
             console.log("posted");
             //loadClients();
         });
@@ -993,13 +1045,18 @@ function runEditPackage(id) {
     });
 }
 
-function runEditPlanPackage(){
-    getPlansForSelection($("#editPlanPackage .linkPlan"));
-    getPackagesForSelection($("#editPlanPackage .linkPackage"));
+function runAddPlanPackage(){
+    $("#removePlanPackage .linkPackage option").remove();
+    $("#removePlanPackage .linkPlan option").remove();
 
-    $("#addPlanPackage").click(function(event){
-        var planData = $("#editPlanPackage .linkPlan").val();
-        var packageData = $("#editPlanPackage .linkPackage").val();
+	getPlansForSelection($("#addPlanPackage .linkPlan"));
+    getPackagesForSelection($("#addPlanPackage .linkPackage"));
+
+
+
+    $("#addPlanPackage-btn").click(function(event){
+        var planData = $("#addPlanPackage .linkPlan").val();
+        var packageData = $("#addPlanPackage .linkPackage").val();
 
         var payload = {
         	option : 'add',
@@ -1007,7 +1064,7 @@ function runEditPlanPackage(){
             fk_idPackage : packageData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/package-contents", payload, function(result){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/package-contents", payload, function(result){
 
         	console.log(result);
 
@@ -1018,9 +1075,37 @@ function runEditPlanPackage(){
         event.stopImmediatePropagation();
     });
 
-    $("#removePlanPackage").click(function(event){
-        var planData = $("#editPlanPackage .linkPlan").val();
-        var packageData = $("#editPlanPackage .linkPackage").val();
+}
+
+function runRemovePlanPackage(){
+    $("#removePlanPackage .linkPackage option").remove();
+    $("#removePlanPackage .linkPlan option").remove();
+    getPackagesForSelection($("#removePlanPackage .linkPackage"));
+
+    $(".linkPackage").change(function(event) {
+
+    	var idPackageData = $("#removePlanPackageModal .linkPackage").val();
+
+    	var payload = {
+			option : 'inPackage',
+			idPackage : idPackageData
+        }
+
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/package-contents", payload, function (data) {
+            console.log("posted");
+            for (var i = 0; i < data.length; i++) {
+                var opt = document.createElement("option");
+                opt.value = data[i].fk_idPlan;
+                opt.textContent = data[i].plName;
+                $("#removePlanPackageModal").find(".linkPlan").append(opt);
+            }
+        });
+
+    });
+
+    $("#removePlanPackage-btn").click(function(event){
+        var planData = $("#removePlanPackage .linkPlan").val();
+        var packageData = $("#removePlanPackage .linkPackage").val();
 
         var payload = {
             option : 'delete',
@@ -1028,7 +1113,7 @@ function runEditPlanPackage(){
             fk_idPackage : packageData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/package-contents", payload, function(result){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/package-contents", payload, function(result){
 
             console.log(result);
 
@@ -1038,9 +1123,7 @@ function runEditPlanPackage(){
         event.preventDefault();
         event.stopImmediatePropagation();
     });
-
 }
-
 
 function resetEditPackageForm() {
     $("#editPackageModal").find(".PackageName").val("");
@@ -1064,7 +1147,7 @@ function setupSession(){
 
 
 
-    /***************** Open/Close ***************/
+    /**********************	Open/Close ******************************/
 
     $("#open-addSessionbtn").on('click', function(event){
         event.preventDefault(); 
@@ -1082,7 +1165,7 @@ function setupSession(){
 				fk_idClient :  $("#addNewSession").find(".sessionClient").val()
 			}
 			
-			$.post("http://flip2.engr.oregonstate.edu:24561/dog", payload, function(data){
+			$.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/dog", payload, function(data){
 				console.log("posted");
 				for(var i = 0; i < data.length; i++) {
                     var opt = document.createElement("option");
@@ -1107,6 +1190,7 @@ function setupSession(){
 
     $("#open-viewSessionbtn").click(function(event){
         hideAll();
+        getClientsForSelection($("#viewManageSession").find(".sessionClient"));
         $("#viewManageSession").show();
 
         event.preventDefault(); 
@@ -1129,7 +1213,7 @@ function setupSession(){
             option : 'viewAll'
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/session", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/session", payload, function(data){
             console.log("posted");
             populateSessions(data);
         });
@@ -1148,7 +1232,7 @@ function setupSession(){
             searchData : nameSearchData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/session", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/session", payload, function(data){
             console.log("posted");
             populateSessions(data);
         });
@@ -1158,18 +1242,16 @@ function setupSession(){
 		event.stopImmediatePropagation();
     });
 
-    $("#session-filter-date-btn").click(function(event){
+    $("#session-filter-client-btn").click(function(event){
 
-        var dateData = $("#viewManageSession").find(".sessionDate").val();
-		var typeData = $("input[name='dateSearch']:checked").val();
+        var clientData = $("#viewManageSession").find(".sessionClient").val();//.toLocaleFormat('%Y-%m-%d');
 
         var payload = {
-            option : 'dateSearch',
-            date : dateData,
-			type : typeData
+            option : 'client',
+            idClient : clientData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/session", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/session", payload, function(data){
             console.log("posted");
             populateSessions(data);
         });
@@ -1195,7 +1277,7 @@ function setupSession(){
 
         console.log(SessionPayload);
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/session", SessionPayload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/session", SessionPayload, function(data){
             console.log("posted");
             //loadClients();
         });
@@ -1206,13 +1288,11 @@ function setupSession(){
 
 
 
-    function populateSessions(data){
+    	/* takes the results from query and generates and displays a table */ 
+ 	 function populateSessions(data){
         $("#searchResultDiv").show();
         var table = document.getElementById("searchResultTable");
         $("#searchResultTable tr").remove();
-
-        //var headerRow = $("<tr> <th>Client</th> <th>Date</th> <th>Length</th> </tr>");
-        //table.appendChild(headerRow);
 
         for(var i = 0; i < data.length; i++) {
             var resultRow = document.createElement("tr");
@@ -1254,6 +1334,7 @@ function setupSession(){
 
 }
 
+/* Display modal for editing a session and handle sending of post request to edit */ 
 function runEditSession(id) {
 
     var payload = {
@@ -1267,7 +1348,7 @@ function runEditSession(id) {
             fk_idClient :  $("#editSessionForm").find(".sessionClient").val()
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/dog", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/dog", payload, function(data){
             console.log("posted");
             for(var i = 0; i < data.length; i++) {
                 var opt = document.createElement("option");
@@ -1282,14 +1363,14 @@ function runEditSession(id) {
     $("#editSessionModal .sessionClient option").remove();
     getClientsForSelection($("#editSessionModal").find(".sessionClient"));
 	getPlansForSelection($("#editSessionModal").find(".sessionPlan"));
-    $.post("http://flip2.engr.oregonstate.edu:24561/session", payload, function(data){
+    $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/session", payload, function(data){
         console.log("posted");
 
         var planPayload = {
         	option : 'singleRecord',
 			idPlan : data[0].fk_idPlan
 		}
-        $.post("http://flip2.engr.oregonstate.edu:24561/plan", planPayload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/plan", planPayload, function(data){
         	console.log("posted");
             $("#editSessionModal").find(".currentPlan").text(data[0].name);
             $("#editSessionModal").find(".currentDescription").text(data[0].description);
@@ -1316,7 +1397,7 @@ function runEditSession(id) {
             fk_idPlan: idPlanData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/session", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/session", payload, function(data){
             console.log("posted");
             //loadClients();
         });
@@ -1334,7 +1415,7 @@ function runEditSession(id) {
             idSession : idSessionData
         }
 
-        $.post("http://flip2.engr.oregonstate.edu:24561/session", payload, function(data){
+        $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/session", payload, function(data){
             console.log("posted");
             //loadClients();
         });
@@ -1369,7 +1450,7 @@ function getPackagesForSelection(idToApplyTo){
 		option : 'viewAll',
 	}
 
-	$.post("http://flip2.engr.oregonstate.edu:24561/package", payload, function(data){
+	$.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/package", payload, function(data){
 		console.log(data);
 		for(var i = 0; i < data.length; i++) {
             var opt = document.createElement("option");
@@ -1385,7 +1466,7 @@ function getPlansForSelection(idToApplyTo){
         option : 'viewAll',
     }
 
-    $.post("http://flip2.engr.oregonstate.edu:24561/plan", payload, function(data){
+    $.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/plan", payload, function(data){
         console.log(data);
         for(var i = 0; i < data.length; i++) {
             var opt = document.createElement("option");
@@ -1403,7 +1484,7 @@ function getClientsForSelection(idToApplyTo){
 		option : 'nameList'
 	}
 	
-	$.post("http://flip2.engr.oregonstate.edu:24561/client", payload, function(data){
+	$.post("http://DogtrainingDb-env.2jmuvdscbk.us-west-2.elasticbeanstalk.com/client", payload, function(data){
 		console.log(data);
 		for(var i = 0; i < data.length; i++){
 

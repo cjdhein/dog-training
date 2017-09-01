@@ -29,7 +29,8 @@
                                 <td><button class="buttonCell" id="open-viewSessionbtn">View / Edit Sessions</button>
                             </tr>
                             <tr>
-                                <td><button class="buttonCell" id="open-editPlanPackagebtn">Add / Remove Plans from Packages</button>
+                                <td><button class="buttonCell" id="open-addPlanPackagebtn">Add Plans to Packages</button>
+                                <td><button class="buttonCell" id="open-removePlanPackagebtn">Remove Plans from Packages</button>
                             </tr>
                         </table>
                     </form>
@@ -92,8 +93,8 @@
                                 <p>
                                     <label>View Packages that</label>
                                 <p>
-                                    <button id="empty-packages=btn">Have no Plans</button>
-                                    <button id="non-empty-packages=btn">Have Plans</button>
+                                    <button id="empty-packages-btn">Have no Plans</button>
+                                    <button id="non-empty-packages-btn">Have Plans</button>
                                 </p>
                                 </p>
                             </form>
@@ -108,13 +109,12 @@
                                 <button id="session-view-all-btn"> View All </button>
                                 <hr>
                                 <fieldset>
-                                    <h4>By Date</h4>
-                                    <input type="radio" name="dateSearch" value="=" checked="checked"> ON <br>
-                                    <input type="radio" name="dateSearch" value="<"> BEFORE <br>
-                                    <input type="radio" name="dateSearch" value=">"> AFTER <br>
-                                    <input type="date" class="sessionDate">
+                                    <h4>By Client</h4>
+                                    <select class="sessionClient">
+
+                                    </select>
                                     <br>
-                                    <button id="session-filter-date-btn">Filter</button>
+                                    <button id="session-filter-client-btn">Filter</button>
                                 </fieldset>
                             </form>
 
@@ -147,8 +147,7 @@
                 </div>
                 <div class="inputBlock">
                     <fieldset> <legend>Address</legend>
-                        <span><label>House Number:</label><input type="text" class="houseNum"></span>
-                        <span><label>Street:</label><input type="text" class="street"></span>
+                        <span><label>Address:</label><input type="text" class="address"></span>
                         <span><label>City:</label><input type="text" class="city"></span>
                         <span><label>State:</label>
 								<select class="state">
@@ -233,8 +232,7 @@
                 </div>
                 <div class="inputBlock">
                     <fieldset> <legend>Address</legend>
-                        <span><label>House Number:</label><input type="text" class="houseNum"></span>
-                        <span><label>Street:</label><input type="text" class="street"></span>
+                        <span><label>Address:</label><input type="text" class="address"></span>
                         <span><label>City:</label><input type="text" class="city"></span>
                         <span><label>State:</label>
 								<select class="state">
@@ -531,11 +529,11 @@
     </div>
 </div>
 
-<div id="editPlanPackageModal" class="modal fade">
+<div id="addPlanPackageModal" class="modal fade">
     <div class=" modal-content panel panel-primary">
-        <div class="panel-heading">Add / Remove Plan from Packages</div>
+        <div class="panel-heading">Add Plan to Packages</div>
         <div class="panel-body">
-            <form class="mainform" method="post" id="editPlanPackage">
+            <form class="mainform" method="post" id="addPlanPackage">
                 <div class="inputBlock">
                     <fieldset><legend>Select parent Package:</legend>
                         <label>Package: </label>
@@ -543,21 +541,45 @@
 
                         </select>
                     </fieldset>
-                    <fieldset><legend>Select the Plan to add or remove:</legend>
+                    <fieldset><legend>Select the Plan to add:</legend>
                         <label>Plan: </label>
                         <select class="linkPlan">
 
                         </select>
                     </fieldset>
                 </div>
-                <span><button class="btn btn-default" id="addPlanPackage"> Add </button></span>
-                <span><button class="btn btn-default" id="removePlanPackage"> Remove </button></span>
-                <span><button class="btn btn-default" id="close-PlanPackagebtn"> Close </button></span>
+                <span><button class="btn btn-default" id="addPlanPackage-btn"> Add </button></span>
+                <span><button class="btn btn-default" id="close-addPlanPackagebtn"> Close </button></span>
             </form>
         </div>
     </div>
 </div>
 
+<div id="removePlanPackageModal" class="modal fade">
+    <div class=" modal-content panel panel-primary">
+        <div class="panel-heading">Remove Plan from Packages</div>
+        <div class="panel-body">
+            <form class="mainform" method="post" id="removePlanPackage">
+                <div class="inputBlock">
+                    <fieldset><legend>Select parent Package:</legend>
+                        <label>Package: </label>
+                        <select class="linkPackage">
+
+                        </select>
+                    </fieldset>
+                    <fieldset><legend>Select the Plan to remove:</legend>
+                        <label>Plan: </label>
+                        <select class="linkPlan">
+
+                        </select>
+                    </fieldset>
+                </div>
+                <span><button class="btn btn-default" id="removePlanPackage-btn"> Remove </button></span>
+                <span><button class="btn btn-default" id="close-removePlanPackagebtn"> Close </button></span>
+            </form>
+        </div>
+    </div>
+</div>
 
 <div id="searchResultDiv" class="panel panel-default panel-heading hideable">
     <h3>Search Results</h3>
